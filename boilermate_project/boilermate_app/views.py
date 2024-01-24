@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from .models import User, Video
 from .serializers import UserSerializer, VideoSerializer
 
-class UserViewSet(viwesets.ModelViewSets):
+class UserViewSet(viewsets.ModelViewSets):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
