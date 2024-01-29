@@ -50,7 +50,7 @@ struct ContentView: View
     //                        .foregroundColor(.blue)
     //                        .underline()
                     }
-                    .padding()
+                    .padding(.leading)
                     .sheet(isPresented: $infoSheet) {
                         // Content of the sheet
                         BoilermateInfoSheet()
