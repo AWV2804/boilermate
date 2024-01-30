@@ -6,7 +6,7 @@ from django.utils.crypto import get_random_string
 from boilermate_app.models import User
 
 # Set up Django
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "your_project_name.settings")  # Replace with your actual project name
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "boilermate_project.settings")
 django.setup()
 
 def create_and_save_user(username, email):

@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-++&!858^-_^fu3!=%uzx-&-)h7@+3*ktv8!13p80944wip@b%e'
+SECRET_KEY = 'django-insecure-yin)ff$k*(-s%8&jx8@vb1lw(c6j-6^xk4*m-cwjbs_w_gwbd6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'boilermate_app'
+    'boilermate_app',
 ]
 
 MIDDLEWARE = [
@@ -78,10 +78,11 @@ WSGI_APPLICATION = 'boilermate_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': '',
-        'HOST': '',
-        'PORT': '',
-        'PASSWORD': '',
+        'NAME': 'BoilermateDB',
+        'USER': 'mcli',
+        'PASSWORD': 'bA0C1e!c#O0eCU0',
+        'HOST': '18.117.105.157', # fix this when dns is ok 'ec2-18-117-105-157.us-east-2.compute.amazonaws.com',
+        'PORT': '3306',
     }
 }
 
