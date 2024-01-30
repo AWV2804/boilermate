@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C65307C2B68843F009E8264 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0C65307B2B68843F009E8264 /* GoogleService-Info.plist */; };
 		0C8D752C2B62F613009262D0 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0C8D752B2B62F613009262D0 /* FirebaseAuth */; };
 		0C8D752E2B62F613009262D0 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 0C8D752D2B62F613009262D0 /* FirebaseFirestore */; };
 		0C8D75312B62F8C6009262D0 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0C8D75302B62F8C6009262D0 /* FirebaseAnalytics */; };
-		0C8D75332B62F905009262D0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0C8D75322B62F905009262D0 /* GoogleService-Info.plist */; };
 		0C9D98322B5A48EE0071CC77 /* BoilermateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9D98312B5A48EE0071CC77 /* BoilermateApp.swift */; };
 		0C9D98342B5A48EE0071CC77 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9D98332B5A48EE0071CC77 /* ContentView.swift */; };
 		0C9D98362B5A48EF0071CC77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0C9D98352B5A48EF0071CC77 /* Assets.xcassets */; };
@@ -21,7 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0C8D75322B62F905009262D0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		0C65307B2B68843F009E8264 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0C9D982E2B5A48EE0071CC77 /* Boilermate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Boilermate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C9D98312B5A48EE0071CC77 /* BoilermateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoilermateApp.swift; sourceTree = "<group>"; };
 		0C9D98332B5A48EE0071CC77 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -79,8 +79,8 @@
 			isa = PBXGroup;
 			children = (
 				0C9D98312B5A48EE0071CC77 /* BoilermateApp.swift */,
-				0C8D75322B62F905009262D0 /* GoogleService-Info.plist */,
 				0C9D98332B5A48EE0071CC77 /* ContentView.swift */,
+				0C65307B2B68843F009E8264 /* GoogleService-Info.plist */,
 				0C9D985D2B5A4B0C0071CC77 /* GlobalTypes.swift */,
 				0C9D985B2B5A49870071CC77 /* LoginView.swift */,
 				0C9D985F2B5A4C940071CC77 /* ClassSelectionView.swift */,
@@ -183,7 +183,7 @@
 			files = (
 				0C9D98392B5A48EF0071CC77 /* Preview Assets.xcassets in Resources */,
 				0C9D98362B5A48EF0071CC77 /* Assets.xcassets in Resources */,
-				0C8D75332B62F905009262D0 /* GoogleService-Info.plist in Resources */,
+				0C65307C2B68843F009E8264 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
