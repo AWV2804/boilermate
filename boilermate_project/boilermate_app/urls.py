@@ -5,7 +5,7 @@ from .views import ClassViewSet
 from .urls import home
 
 router = DefaultRouter()
-router.register(r'users', ClassViewSet)
+router.register(r'Classes', ClassViewSet)
 
 urlpatterns = [
     path('', home, name='home'),
