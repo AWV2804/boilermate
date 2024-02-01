@@ -42,8 +42,9 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '10/s',
-        'user': '20/s',
+        'anon': '50/s',
+        'user': '100/s',
+        'api': '40/s',
     }
 }
 

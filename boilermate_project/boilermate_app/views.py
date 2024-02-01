@@ -22,7 +22,7 @@ class ScrapeView(View):
             new_class = Classes.objects.create(name=name, topics=topics)
             new_class.save() #saves content to the mysql database
             
-            return HttpResponse(f"Scraped Class: {name} saved to database")
+            return HttpResponse(f'Scraped Class: {name} saved to database')
         else:
             return HttpResponse("Failed to fetch the webpage")
 
