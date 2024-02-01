@@ -1,5 +1,8 @@
 # boilermate_app/views.py
 from rest_framework import viewsets
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from .models import Classes
 from .serializers import ClassesSerializer
 from django.http import HttpResponse
@@ -29,3 +32,9 @@ class ScrapeView(View):
 class ClassViewSet(viewsets.ModelViewSet):
     queryset = Classes.objects.all()
     serializer_class = ClassesSerializer
+    
+class APIViewset(APIView):
+    throttle_classes = [AnonRateThrottle, UserRateThrottle]
+    
+    def get(self, request):
+        return Response({'message': 'Touched Base with API'})
