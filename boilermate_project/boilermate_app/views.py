@@ -1,12 +1,8 @@
 # boilermate_app/views.py
 from rest_framework import viewsets
-from .models import User, Video
-from .serializers import UserSerializer, VideoSerializer
+from .models import Classes
+from .serializers import ClassesSerializer
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-class VideoViewSet(viewsets.ModelViewSet):
-    queryset = Video.objects.all()
-    serializer_class = VideoSerializer
+class ClassViewSet(viewsets.ModelViewSet):
+    queryset = Classes.objects.all()
+    serializer_class = ClassesSerializer

@@ -4,6 +4,7 @@ import os
 import django
 from django.utils.crypto import get_random_string
 from boilermate_app.models import User
+from django.conf import settings
 
 # Set up Django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "boilermate_project.settings")

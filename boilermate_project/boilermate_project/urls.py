@@ -18,7 +18,7 @@ Including another URLconf
 # boilermate_project/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from boilermate_app.views import UserViewSet, VideoViewSet
+from boilermate_app.views import ClassViewSet
 from django.http import HttpResponse
 
 def home(request):

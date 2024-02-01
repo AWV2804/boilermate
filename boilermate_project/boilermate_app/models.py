@@ -1,13 +1,8 @@
 from django.db import models
 
-class User(models.Model):
-    username = models.CharField(max_length=255)
-    email = models.EmailField()
-
-    def __str__(self):
-        return self.username
-class Video(models.Model):
-    video = models.TextField(max_length=255)
+class Classes(models.Model):
+    classes = models.CharField(max_length=200)
+    topics = models.TextField()
+    videoUrls = models.TextField()
     
-    def __str__(self):
-        return self.video
+# class Item():
