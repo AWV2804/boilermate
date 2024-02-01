@@ -25,8 +25,7 @@ SECRET_KEY = 'django-insecure-yin)ff$k*(-s%8&jx8@vb1lw(c6j-6^xk4*m-cwjbs_w_gwbd6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['ec2-18-117-105-157.us-east-2.compute.amazonaws.com']
 
 # Application definition
 
@@ -40,6 +39,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'boilermate_app',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '10/s',
+        'user': '20/s',
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

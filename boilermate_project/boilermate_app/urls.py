@@ -5,9 +5,10 @@ from .views import ClassViewSet
 from .urls import home
 
 router = DefaultRouter()
-router.register(r'Classes', ClassViewSet)
+router.register(r'Classes', ClassViewSet, basename='classModel')
 
 urlpatterns = [
+    path('api/', include(router.urls)),
     path('', home, name='home'),
     path('', include(router.urls)),
 ]
