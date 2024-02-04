@@ -5,6 +5,7 @@ import { Button, Text, TextInput } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const HomeScreen = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
 
   return (
     <View className="grow" style={{paddingTop: insets.top, paddingBottom: insets.bottom, backgroundColor: '#fbf9f0'}}>
@@ -18,12 +19,12 @@ const HomeScreen = ({ navigation }) => {
         <View className="flex grow pl-8 pr-8">
           <TouchableOpacity>
             <View className="shadow-md mx-2 my-4 p-4 rounded-2xl" style={{backgroundColor: '#f1dd76'}}>
-              <Text className="text-center" variant="titleMedium">Create Room</Text>
+              <Text className="text-center" variant="titleMedium">Login</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity>
             <View className="shadow-md mx-2 my-4 p-4 rounded-2xl" style={{backgroundColor: '#f1dd76'}}>
-              <Text className="text-center" variant="titleMedium">Join Room</Text>
+              <Text className="text-center" variant="titleMedium">Sign Up</Text>
             </View>
           </TouchableOpacity >
         </View>
