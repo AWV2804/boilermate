@@ -1,5 +1,5 @@
 """
-URL configuration for boilermate_project project.
+URL configuration for boilermate_project_fb project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
@@ -14,18 +14,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-# boilermate_app/urls.py
-# boilermate_project/urls.py
 from django.contrib import admin
-from django.urls import path, include
-# from boilermate_app.views import ScrapeView
-from django.http import HttpResponse
-
-def home(request):
-    return HttpResponse("Welcome to Boilermate App!")
+from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('boilermate_app.urls')),
 ]
-
