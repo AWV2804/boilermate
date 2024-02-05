@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import json
+
+with open('C:\Users\mli00\Desktop\Purdue\ECE 49595O\boilermate-b3fcd-firebase-adminsdk-rwh4i-30e3b04f5c.json') as f: #change w respect to computer/cloud platform
+    firebase_credentials = json.load(f)
+    
+FIREBASE_DATABASE_URL = "https:/"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
