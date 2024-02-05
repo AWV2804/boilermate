@@ -1,5 +1,6 @@
 // import { StatusBar } from 'expo-status-bar';
 // import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { PaperProvider } from 'react-native-paper';
 import { TailwindProvider } from 'tailwindcss-react-native';
@@ -7,18 +8,23 @@ import { TailwindProvider } from 'tailwindcss-react-native';
 // import { View } from 'react-native';
 // import { StatusBar } from 'react-native';
 // import { Text } from 'react-native';
-import Boilermate from './components/Boilermate';
+
+import HomeScreen from './components/HomeScreen';
+import LoginScreen from './components/LoginScreen';
+
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
-
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <TailwindProvider>
       <NavigationContainer>
-        <PaperProvider>
-          <Boilermate />
-        </PaperProvider>
+        <Stack.Navigator>
+            <Stack.Screen options={{ headerShown: false }} name="Home" component={HomeScreen} />
+            <Stack.Screen options={{ headerTitle: 'Boilermate Login', headerBackVisible: false }} name="Login" component={LoginScreen} />
+        </Stack.Navigator>
       </NavigationContainer>
     </TailwindProvider>
   );

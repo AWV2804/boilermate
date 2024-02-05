@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './HomeScreen';
+import LoginScreen from './LoginScreen';
 
 // import CreateRoomScreen from './CreateRoomScreen';
 // import JoinRoomScreen from './JoinRoomScreen'
@@ -24,6 +25,7 @@ const Boilermate = () => {
         headerShown: false
       }}>
       <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
     </Stack.Navigator>
   )
 }
