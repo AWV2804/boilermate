@@ -1,38 +1,38 @@
-import { NavigationContainer } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { View, Image, TouchableOpacity } from 'react-native';
-import { Button, Text, TextInput } from 'react-native-paper';
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const HomeScreen = ({ navigation }) => {
-  const insets = useSafeAreaInsets();
+
+const HomeScreen = () => {
+  const navigation = useNavigation();
 
   return (
-    <View className="grow" style={{paddingTop: insets.top, paddingBottom: insets.bottom, backgroundColor: '#fbf9f0'}}>
-        <View className="flex h-1/2 justify-center items-center">
-          <Image
-            resizeMode='contain'
-            style={{width: 300, height: 100}}
-            source={require('../assets/icon.png')}
-          />
+    <View style={{ flex: 1, backgroundColor: '#fbf9f0', justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ fontSize: 28, fontWeight: 'bold', padding: 5, marginBottom: 10 }}>
+        Welcome to Boilermate
+      </Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <View style={{
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2,
+          shadowRadius: 2,
+          elevation: 1,
+          marginHorizontal: 2,
+          marginVertical: 4,
+          padding: 10,
+          borderRadius: 10,
+          width: 300,
+          height: 50,
+          backgroundColor: '#C28E0C',
+        }}>
+          <Text style={{ textAlign: 'center', color: 'black', fontSize: 16, marginTop: 5 }}>
+            Get Started
+          </Text>
         </View>
-        <View className="flex grow pl-8 pr-8">
-          <TouchableOpacity>
-            <View className="shadow-md mx-2 my-4 p-4 rounded-2xl" style={{backgroundColor: '#f1dd76'}}>
-              <Text className="text-center" variant="titleMedium">Login</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View className="shadow-md mx-2 my-4 p-4 rounded-2xl" style={{backgroundColor: '#f1dd76'}}>
-              <Text className="text-center" variant="titleMedium">Sign Up</Text>
-            </View>
-          </TouchableOpacity >
-        </View>
-        {/* <Button icon="camera" mode="contained" onPress={() => navigation.navigate("Final")}>
-    Press me
-  </Button> */}
+      </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
 export default HomeScreen;
