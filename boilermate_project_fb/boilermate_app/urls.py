@@ -1,6 +1,6 @@
 from django.urls import path
-from . import views
+from boilermate_project_fb.utils import URLScraper
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('scrape/', URLScraper.as_view(), name='scrape_url'),
 ]

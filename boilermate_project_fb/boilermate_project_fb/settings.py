@@ -11,12 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import json
 
-with open('C:\Users\mli00\Desktop\Purdue\ECE 49595O\boilermate-b3fcd-firebase-adminsdk-rwh4i-30e3b04f5c.json') as f: #change w respect to computer/cloud platform
-    firebase_credentials = json.load(f)
     
-FIREBASE_DATABASE_URL = "https:/"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,8 +29,19 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# ALLOWED_HOSTS = ['http://localhost:8000'] # add firebase in here later
+
 
 # Application definition
+
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'myapp.throttling.FirebaseThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'firebase_request': '5/second',
+    }
+}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -43,6 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.core.management',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
