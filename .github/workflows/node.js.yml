@@ -9,7 +9,8 @@ on:
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
-    
+    branches: [ "frontend" ]  # Add the branch name here
+
 jobs:
   build:
 
