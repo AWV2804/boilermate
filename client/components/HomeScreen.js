@@ -12,7 +12,7 @@ const HomeScreen = () => {
       <Text style={{ fontSize: 30, fontWeight: 'bold', padding: 5, marginBottom: 10 }}>
         Welcome to Boilermate
       </Text>
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+      <TouchableOpacity onPress={() => navigation.navigate('Login')} testID="PLEASEWORK">
         <View style={styles.button}>
           <Text style={styles.buttonTextBlack}>
             Get Started

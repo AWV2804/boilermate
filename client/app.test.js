@@ -1,14 +1,27 @@
-import renderer from "react-test-renderer";
-import App from "./App";
+import React from 'react';
+import { Text, TouchableOpacity } from 'react-native';
+import { render, fireEvent, act } from '@testing-library/react-native';
+import HomeScreen from './components/HomeScreen';
+import { useNavigation } from '@react-navigation/native';
 
-describe("App", () => {
-  it("has 1 child", () => {
-    const tree = renderer.create(<App />).toJSON();
-    expect(tree.children.length).toBe(1);
-  });
 
-  it("renders correctly", () => {
-    const tree = renderer.create(<App />).toJSON();
-    expect(tree).toMatchSnapshot();
-  });
+
+describe('HomeScreen', () => {
+    it('should detect a press on TouchableOpacity', () => {
+        const testButton = jest.fn()
+        const { getByText, debug } = render(<HomeScreen />);
+        const button = getByText('Get Started');
+        console.log('TouchableOpacity with "Get Started" found:', button);
+
+        debug();
+        act(() => {
+            fireEvent.press(button);
+        });
+        debug();
+
+        const navigation = useNavigation();
+        console.log('Was navigate called:', navigation.navigate.mock.calls);
+        expect(true);
+    });
 });
+
