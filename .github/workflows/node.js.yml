@@ -5,11 +5,11 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "frontend" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
-    branches: [ "frontend" ]  # Add the branch name here
+    branches: [ "main" ]  # Add the branch name here
 
 jobs:
   build:
