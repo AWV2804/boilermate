@@ -10,7 +10,8 @@ describe('HomeScreen', () => {
     it('should detect a press on TouchableOpacity', () => {
         const testButton = jest.fn()
         const { getByText, debug } = render(<HomeScreen />);
-        const button = getByText('Get Started');
+        // const pressMeButton = getByTestId("MyButton:Button:ClickMe");
+        const button = getByTestId('PLEASEWORK')
         console.log('TouchableOpacity with "Get Started" found:', button);
 
         debug();
