@@ -44,8 +44,9 @@ jobs:
           npm ci
           npm install -g istanbul
           npm test
-      - name: Generate coverage reports
-        run: istanbul report --format lcov
+          istanbul report --format lcov
+      # - name: Generate coverage reports
+      #   run: istanbul report --format lcov
   
       - name: Upload coverage reports
         uses: actions/upload-artifact@v2
