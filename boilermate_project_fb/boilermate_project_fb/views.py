@@ -9,7 +9,7 @@ def parse_and_send_view(request):
     thePath = Path(r'/mnt/c/Users/mli00/Desktop/Purdue/ECE 49595O/Boilermate-b3fcd-firebase-adminsdk-rwh4i-30e3b04f5c.json') # subjected to change soon, change when move to cloud
     scraper = URLScraper(thePath)
     response = scraper.get(r'https://engineering.purdue.edu/ECE/Academics/Undergraduates/UGO/CourseInfo/') # to be changed by user input
-    print(f'{response}')
+    # print(f'{response}')
     return HttpResponse(response)
 
 
