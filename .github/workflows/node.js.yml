@@ -29,5 +29,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: client/package-lock.json
-    - run:   cd client
-             ls
+    - run: |
+        cd client
+        ls
