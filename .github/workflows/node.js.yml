@@ -45,14 +45,15 @@ jobs:
           npm install -g istanbul
           npm test
           istanbul report --format lcov
-      # - name: Generate coverage reports
-      #   run: istanbul report --format lcov
-  
-      - name: Upload coverage reports
+      - name: Upload coverage artifact
         uses: actions/upload-artifact@v2
         with:
           name: coverage
-          path: coverage
+          path: client/coverage
+      # - name: Generate coverage reports
+      #   run: istanbul report --format lcov
+
+       
   
       # - name: Display coverage summary
       #   uses: matbesancon/github-coverage-action@v1
