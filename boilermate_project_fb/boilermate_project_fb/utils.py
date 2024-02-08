@@ -5,11 +5,8 @@ from firebase_admin import credentials, db
 from django.http import HttpResponse
 
 class URLScraper:
-    def __init__(self, firebase_credentials_path):
-        cred = credentials.Certificate(firebase_credentials_path)
-        firebase_admin.initialize_app(cred, {
-            'databaseURL': 'https://boilermate-b3fcd-default-rtdb.firebaseio.com'
-        })
+    def __init__(self, url):
+        self.url = url
 
     def save_to_firebase(self, department, course_text, link):
         # Get a reference to the Firebase database
@@ -17,7 +14,7 @@ class URLScraper:
         ref = db.reference('Classes')
         ref.child(department).child(course_text).set(link)
 
-    def get(self, url):
+    def get(self):
         # hard coding part of the url
         # dynamic_course_url = "https://engineering.purdue.edu/ECE/Academics/Undergraduates/UGO/CourseInfo/"
         # list of classes page to scrape
@@ -34,7 +31,7 @@ class URLScraper:
             department = "ECE" # change depending on students' major
             for course in courses:
                 course_text = course.text.replace('\r', '').replace('\n', '').replace('/', '\u2215')
-                link = url + course.find('a').get('href')
+                link = self.url + course.find('a').get('href')
                 # Save to Firebase
                 self.save_to_firebase(department, course_text, link)
             return HttpResponse('Scraped Classes saved to Firebase Database')

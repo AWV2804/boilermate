@@ -4,11 +4,36 @@ import requests
 from pathlib import Path
 from django.http import JsonResponse
 from django.shortcuts import render
+from .settings import getPath
+import firebase_admin.auth
+from django.http import JsonResponse
+from firebase_admin import db
+
+
+def login(request):
+    if request.method == 'POST':
+        email = request.POST.get('Email')
+        password = request.POST.get('Password')
+        ref = db.reference('Users')
+        user_ref = ref.child('Email').get()
+
+        if user_ref:
+            # If the username is found, check if the password matches
+            for uid, user_data in user_ref.items():
+                if user_data.get('Password') == password:
+                    return JsonResponse({'message': 'Login successful'}, status=200)
+            # If the password doesn't match, return an error response
+            return JsonResponse({'error': 'Incorrect password'}, status=400)
+        else:
+            # If the username is not found, return an error response
+            return JsonResponse({'error': 'Username not found'}, status=400)
+
+    # Return a 405 Method Not Allowed response if the request method is not POST
+    return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 def parse_and_send_view(request):
-    thePath = Path(r'/mnt/c/Users/mli00/Desktop/Purdue/ECE 49595O/Boilermate-b3fcd-firebase-adminsdk-rwh4i-30e3b04f5c.json') # subjected to change soon, change when move to cloud
-    scraper = URLScraper(thePath)
-    response = scraper.get(r'https://engineering.purdue.edu/ECE/Academics/Undergraduates/UGO/CourseInfo/') # to be changed by user input
+    scraper = URLScraper(r'https://engineering.purdue.edu/ECE/Academics/Undergraduates/UGO/CourseInfo/')
+    response = scraper.get() # to be changed by user input
     # print(f'{response}')
     return HttpResponse(response)
 

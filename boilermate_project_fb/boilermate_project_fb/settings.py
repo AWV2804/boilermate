@@ -11,8 +11,17 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import firebase_admin
+from firebase_admin import credentials
 
-    
+def getPath():
+    return Path(r'/mnt/c/Users/mli00/Desktop/Purdue/ECE 49595O/Boilermate-b3fcd-firebase-adminsdk-rwh4i-30e3b04f5c.json') # subject to change
+
+path = getPath()
+cred = credentials.Certificate(path)
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://boilermate-b3fcd-default-rtdb.firebaseio.com'
+})
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
