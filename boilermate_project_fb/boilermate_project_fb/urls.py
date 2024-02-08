@@ -15,8 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import front_page
+
+router = DefaultRouter()
+
 
 urlpatterns = [
+    path('', include(router.urls)), # change when we have frontend
     path('admin/', admin.site.urls),
+    path('firebase/', include('boilermate_app.urls')),
 ]
+
+# path('', front_page), until front page is ready

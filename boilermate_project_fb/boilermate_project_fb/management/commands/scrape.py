@@ -6,4 +6,5 @@ class Command(BaseCommand):
     
     def handle(self, *args, **options):
         scraper = URLScraper('c:\Users\mli00\Desktop\Purdue\ECE 49595O\boilermate-b3fcd-firebase-adminsdk-rwh4i-30e3b04f5c.json')
-        scraper.get('https://engineering.purdue.edu/ECE/Academics/Undergraduates/UGO/CourseInfo/')
+        response = scraper.get('https://engineering.purdue.edu/ECE/Academics/Undergraduates/UGO/CourseInfo/')
+        print(f'{response}')

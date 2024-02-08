@@ -27,16 +27,16 @@ SECRET_KEY = 'django-insecure-)($s&&en#j9+9r^mv5qq)hb)h&+@i(4-2tk_zn64@h())wcku8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = ['http://127.0.0.1:8000/', 'http://127.0.0.1:8000/firebase/parse-and-send', 'http://127.0.0.1:8000/firebase/call-api-view', 'http://127.0.0.1:8000/admin/']
 
-# ALLOWED_HOSTS = ['http://localhost:8000'] # add firebase in here later
+ALLOWED_HOSTS = [] # add firebase in here later
 
 
 # Application definition
 
 REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
-        'myapp.throttling.FirebaseThrottle',
+        'boilermate_app.throttling.FirebaseThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
         'firebase_request': '5/second',
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.core.management',
     'rest_framework',
+    'boilermate_app',
 ]
 
 MIDDLEWARE = [

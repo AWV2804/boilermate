@@ -11,13 +11,11 @@ class URLScraper:
             'databaseURL': 'https://boilermate-b3fcd-default-rtdb.firebaseio.com'
         })
 
-    def save_to_firebase(self, course_text, link):
+    def save_to_firebase(self, department, course_text, link):
         # Get a reference to the Firebase database
-        ref = db.reference('classes')
-        ref.push({
-            'name': course_text,
-            'link': link
-        })
+        department = department.strip()
+        ref = db.reference('Classes')
+        ref.child(department).child(course_text).set(link)
 
     def get(self, url):
         # hard coding part of the url
@@ -33,11 +31,12 @@ class URLScraper:
             # Parse the content of the page with BeautifulSoup
             soup = BeautifulSoup(class_response.content, 'html.parser')
             courses = soup.find_all(class_="number-title")
+            department = "ECE" # change depending on students' major
             for course in courses:
-                course_text = course.text.replace('\r', '').replace('\n', '')
+                course_text = course.text.replace('\r', '').replace('\n', '').replace('/', '\u2215')
                 link = url + course.find('a').get('href')
                 # Save to Firebase
-                self.save_to_firebase(course_text, link)
+                self.save_to_firebase(department, course_text, link)
             return HttpResponse('Scraped Classes saved to Firebase Database')
         else:
             return HttpResponse('Failed to fetch webpage')
