@@ -1,8 +1,10 @@
-import requests
+import requests, secrets
 from bs4 import BeautifulSoup
-import firebase_admin
-from firebase_admin import credentials, db
+from firebase_admin import db
 from django.http import HttpResponse
+
+def generate_token():
+    return secrets.token_urlsafe(32)
 
 class URLScraper:
     def __init__(self, url):

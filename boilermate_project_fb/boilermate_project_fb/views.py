@@ -9,17 +9,38 @@ import firebase_admin.auth
 from django.http import JsonResponse
 from firebase_admin import db
 
-
-def login(request):
+def create_account_post(request):
     if request.method == 'POST':
+        username = request.POST.get('Username')
         email = request.POST.get('Email')
         password = request.POST.get('Password')
+        
+        
         ref = db.reference('Users')
-        user_ref = ref.child('Email').get()
+        
+        if ref.child('email').equal_to(email).get():
+            return JsonResponse({'error': 'Email already exists'}, status=400)
+        else:
+            ref.child(email).push({
+                'Username': username,
+                'Password': password
+            })
+            return JsonResponse({'message': 'Account created successfully'}, status=201)
+
+    # Return a 405 Method Not Allowed response if the request method is not POST
+    return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+def loginPost(request):
+    if request.method == 'POST':
+        email = request.POST.get('Email')
+        username = request.POST.get('Username')
+        password = request.POST.get('Password')
+        ref = db.reference('Users')
+        user_ref = ref.child(email).child('Username').equal_to(username).get()
 
         if user_ref:
             # If the username is found, check if the password matches
-            for uid, user_data in user_ref.items():
+            for _, user_data in user_ref.items():
                 if user_data.get('Password') == password:
                     return JsonResponse({'message': 'Login successful'}, status=200)
             # If the password doesn't match, return an error response
