@@ -38,7 +38,7 @@ jobs:
       # - name: Install Istanbul globally
       #   run: npm install -g istanbul
   
-     - name: Install dependencies
+      - name: Install dependencies
         run: |
           cd client
           npm ci
