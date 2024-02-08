@@ -22,13 +22,23 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
+    - name: Checkout code
     - uses: actions/checkout@v3
+    
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: client/package-lock.json
+
+    - name: Change directory to app location
     - run: |
         cd client
         ls
+    
+    - name: Install dependencies
+    - run: npm ci
+
+    - name: Run test
+    - run: npm test
