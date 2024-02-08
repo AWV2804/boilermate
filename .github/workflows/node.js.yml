@@ -51,7 +51,7 @@ jobs:
           name: coverage
           path: coverage
   
-      - name: Display coverage summary
-        uses: matbesancon/github-coverage-action@v1
-        with:
-          path: coverage/lcov-report/index.html
+      # - name: Display coverage summary
+      #   uses: matbesancon/github-coverage-action@v1
+      #   with:
+      #     path: coverage/lcov-report/index.html
