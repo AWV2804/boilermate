@@ -1,28 +1,14 @@
-import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
-import { render, fireEvent, act } from '@testing-library/react-native';
-import HomeScreen from './components/HomeScreen';
-import { useNavigation } from '@react-navigation/native';
+import MyButton from "./components/MyButton";
+import { render, fireEvent } from "@testing-library/react-native";
 
+describe("MyButton", () => {
+  it("calls onPress function when the button is pressed", () => {
+    const mockOnPress = jest.fn();
 
+    const { getByTestId } = render(<MyButton onPress={mockOnPress} />);
+    const pressMeButton = getByTestId("MyButton:Button:ClickMe");
+    fireEvent.press(pressMeButton);
 
-describe('HomeScreen', () => {
-    it('should detect a press on TouchableOpacity', () => {
-        const testButton = jest.fn()
-        const { getByText, debug } = render(<HomeScreen />);
-        // const pressMeButton = getByTestId("MyButton:Button:ClickMe");
-        const button = getByTestId('PLEASEWORK')
-        console.log('TouchableOpacity with "Get Started" found:', button);
-
-        debug();
-        act(() => {
-            fireEvent.press(button);
-        });
-        debug();
-
-        const navigation = useNavigation();
-        console.log('Was navigate called:', navigation.navigate.mock.calls);
-        expect(true);
-    });
+    expect(mockOnPress).toHaveBeenCalled();
+  });
 });
-
