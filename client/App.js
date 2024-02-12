@@ -12,6 +12,7 @@ import { TailwindProvider } from 'tailwindcss-react-native';
 import HomeScreen from './components/HomeScreen';
 import LoginScreen from './components/LoginScreen';
 import SignupScreen from './components/SignupScreen';
+import SettingsScreen from './components/SettingsScreen';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -26,6 +27,7 @@ export default function App() {
             <Stack.Screen options={{ headerShown: false }} name="Home" component={HomeScreen} />
             <Stack.Screen options={{ headerTitle: 'Boilermate Login', headerBackVisible: false }} name="Login" component={LoginScreen} />
             <Stack.Screen options={{ headerTitle: 'Boilermate Signup', headerBackVisible: false }} name="Signup" component={SignupScreen} />
+            <Stack.Screen options={{ headerTitle: 'Settings', headerBackVisible: false }} name="Settings" component={SettingsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </TailwindProvider>

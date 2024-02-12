@@ -41,6 +41,12 @@ export const styles = StyleSheet.create({
             textAlign: 'center',
             marginTop: 5,
             fontSize: 18,
+        },
+        buttonTextRed: {
+            color: '#880808',
+            textAlign: 'center',
+            marginTop: 5,
+            fontSize: 18,
         }
 })
 
