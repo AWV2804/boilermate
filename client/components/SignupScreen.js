@@ -8,7 +8,7 @@ import { auth } from '../firebase.js'
 const SignupScreen = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-
+    const [confirmpassword, setConfirmPassword] = useState('')
     const navigation = useNavigation();
 
     const handleSignUp = () => {
@@ -32,16 +32,24 @@ const SignupScreen = () => {
         >
             <View style={styles.inputContainer}>
                 <TextInput
-                    placerholder="Email"
+                    placeholder="Email"
                     value={email}
                     onChangeText={(text) => setEmail(text)}
                     style={styles.input}
                 >
                 </TextInput>
                 <TextInput
-                    placerholder="Password"
+                    placeholder="Password"
                     value={password}
                     onChangeText={(text) => setPassword(text)}
+                    style={styles.input}
+                    secureTextEntry
+                >
+                </TextInput>
+                <TextInput
+                    placeholder="Confirm Password"
+                    value={confirmpassword}
+                    onChangeText={(text) => setConfirmPassword(text)}
                     style={styles.input}
                     secureTextEntry
                 >
@@ -57,7 +65,7 @@ const SignupScreen = () => {
                     onPress={() => navigation.navigate('Login')}
                     style= {{marginTop: 5}}>
                     
-                    <Text style={styles.buttonTextBlue}>Don't have an account? Sign up</Text>
+                    <Text style={styles.buttonTextBlue}>Have an account? Log in</Text>
               
                 </TouchableOpacity>
             </View>
