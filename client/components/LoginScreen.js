@@ -3,7 +3,8 @@ import React, { useState } from 'react'
 import Home from './HomeScreen.js'
 import { useNavigation } from '@react-navigation/native';
 import { styles } from './GlobalTypes.js'
-import { auth } from '../firebase.js'
+import { auth } from '../firebase'
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('')
@@ -11,17 +12,23 @@ const LoginScreen = () => {
 
     const navigation = useNavigation();
 
-    const handleSignUp = () => {
-        auth.createUserWithEmailAndPassword(email, password)
+    // Handle Log In
+    const handleLogIn = () => {
+        // Check valid email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('Please enter a valid email address');
+            return;  
+        }
+
+        signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                // Signed in
                 const user = userCredential.user;
-                console.log(user.email)
-                // ...
+                console.log('Logged in with: ', user.email)
             })
             .catch((error) => {
-                var errorCode = alert(error.code);
-                var errorMessage = alert(error.message);
+                //var errorCode = alert(error.code);
+                var errorMessage = alert("Invalid credentials. Please try again.");
                 // ..
             });
     }
@@ -47,7 +54,7 @@ const LoginScreen = () => {
                 >
                 </TextInput>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('Login')}
+                    onPress={handleLogIn}
                     style= {{marginTop: 20}}>
                     <View style={styles.button}>
                         <Text style={styles.buttonTextBlack}>Login</Text>
