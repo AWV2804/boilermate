@@ -16,6 +16,9 @@ const SettingsScreen = () => {
         }
     }, []);
 
+    const handlePasswordChange = () => {  
+        navigate.navigate('ChangePassword');
+    }
     const handleSignOut = () => {
     auth
       .signOut()
@@ -26,16 +29,22 @@ const SettingsScreen = () => {
   }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.buttonTextBlack}>User Email: {userEmail}</Text>
-            
+        <View style={{...styles.container, justifyContent: 'flex-start'}}>
+            <Text style={{...styles.buttonTextBlack, marginTop: 30}}>User Email: {userEmail}</Text>
             <TouchableOpacity
-                    onPress={handleSignOut}
-                    style= {{marginTop: 20}}>
-                    <View style={{...styles.button, backgroundColor: 'transparent', borderColor: 'black', borderWidth: 1}}>
-                        <Text style={{...styles.buttonTextRed, backgroundColor: 'white', fontWeight: 'bold'}}>Sign Out</Text>
-                    </View>
-                </TouchableOpacity>
+                onPress={handlePasswordChange}
+                style= {{marginTop: 20}}>
+                <View style={{...styles.button, backgroundColor: 'transparent', borderColor: 'black', borderWidth: 1}}>
+                    <Text style={{...styles.buttonTextBlack, backgroundColor: 'white', fontWeight: 'bold'}}>Change Password</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={handleSignOut}
+                style= {{marginTop: 10}}>
+                <View style={{...styles.button, backgroundColor: 'transparent', borderColor: 'black', borderWidth: 1}}>
+                    <Text style={{...styles.buttonTextRed, backgroundColor: 'white', fontWeight: 'bold'}}>Sign Out</Text>
+                </View>
+            </TouchableOpacity>
         </View>
     );
 };

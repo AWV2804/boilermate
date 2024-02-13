@@ -21,6 +21,9 @@ const LoginScreen = () => {
         return loggedin
       }, [])
 
+    const handleForgotPassword = () => {
+        navigation.navigate('ForgotPassword')
+    }
     // Handle Log In
     const handleLogIn = () => {
         // Check valid email
@@ -72,9 +75,12 @@ const LoginScreen = () => {
                 <TouchableOpacity
                     onPress={() => navigation.navigate('Signup')}
                     style= {{marginTop: 5}}>
-                    
                     <Text style={styles.buttonTextBlue}>Don't have an account? Sign up</Text>
-              
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={handleForgotPassword}
+                    style= {{marginTop: 5}}>
+                    <Text style={styles.buttonTextBlue}>Forgot Password?</Text>
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>
