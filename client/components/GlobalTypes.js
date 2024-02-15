@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
             width: 300
         },
         input: {
+            //width: 300,
             backgroundColor: '#ddd',
             borderRadius: 10, // Add this line to make the input boxes rounded
             //backgroundColor: '#f5f5f5',
@@ -41,6 +42,22 @@ export const styles = StyleSheet.create({
             textAlign: 'center',
             marginTop: 5,
             fontSize: 18,
-        }
+        },
+        buttonTextRed: {
+            color: '#880808',
+            textAlign: 'center',
+            marginTop: 5,
+            fontSize: 18,
+        },
+        inputBox: {
+            width: 300,
+            backgroundColor: '#ddd',
+            borderRadius: 10, // Add this line to make the input boxes rounded
+            //backgroundColor: '#f5f5f5',
+            padding: 10,
+            marginVertical: 5,
+            height: 50,
+            borderRadius: 10 // Add this line to make the input boxes rounded
+        },
 })
 
