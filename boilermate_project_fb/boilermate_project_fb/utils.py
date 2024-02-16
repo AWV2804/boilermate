@@ -10,34 +10,48 @@ class URLScraper:
     def __init__(self, url):
         self.url = url
 
-    def save_to_firebase(self, department, course_text, link):
+    def save_to_firebase(self, department, classTopics):
         # Get a reference to the Firebase database
         department = department.strip()
         ref = db.reference('Classes')
-        ref.child(department).child(course_text).set(link)
+        for title, topics in classTopics.items():
+            titleD = title.replace('\r', '').replace('\n', '').replace('/', '\u2215')
+            topics_str = str(', '.join(topics))
+            # print(f'{titleD}: {topics_str}')
+            ref.child(department).child(titleD).set(topics_str)
 
     def get(self):
         # hard coding part of the url
         # dynamic_course_url = "https://engineering.purdue.edu/ECE/Academics/Undergraduates/UGO/CourseInfo/"
         # list of classes page to scrape
-        classes_url = "https://engineering.purdue.edu/ECE/Academics/Undergraduates/UGO/CourseInfo/coursesUndergrad"
-        
-        # Send a GET request to the URL
-        class_response = requests.get(classes_url)
-        
-        # Check if the request was successful
-        if class_response.status_code == 200:
-            # Parse the content of the page with BeautifulSoup
-            soup = BeautifulSoup(class_response.content, 'html.parser')
+        classesUrl = "https://engineering.purdue.edu/ECE/Academics/Undergraduates/UGO/CourseInfo/coursesUndergrad"
+        dept = "ECE"
+
+        classResponse = requests.get(classesUrl)
+        titles = []
+        links = []
+        classTopics = {}
+
+        if classResponse.status_code == 200:
+            soup = BeautifulSoup(classResponse.content, 'html.parser')
             courses = soup.find_all(class_="number-title")
-            department = "ECE" # change depending on students' major
+
             for course in courses:
-                course_text = course.text.replace('\r', '').replace('\n', '').replace('/', '\u2215')
-                link = self.url + course.find('a').get('href')
-                # Save to Firebase
-                self.save_to_firebase(department, course_text, link)
+                titles.append(course.text)
+                links.append(course.find('a').get('href'))
+
+            for title, link in zip(titles, links):
+                topicUrl = self.url + link
+                topicResponse = requests.get(topicUrl)
+                topics = []
+
+                if topicResponse.status_code == 200:
+                    soup = BeautifulSoup(topicResponse.content, 'html.parser')
+                    topicsSoup = soup.find_all(class_="topic")
+                    for topicSoup in topicsSoup:
+                        topics.append(topicSoup.text)
+                    classTopics[title] = topics
+            self.save_to_firebase(dept, classTopics)
             return HttpResponse('Scraped Classes saved to Firebase Database')
         else:
             return HttpResponse('Failed to fetch webpage')
-
-        
