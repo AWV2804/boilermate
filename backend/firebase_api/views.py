@@ -31,18 +31,22 @@ class FirebaseHandler(View):
         try:
             ref = db.reference('Classes')
             class_name = class_name.replace('/', '\u2215')
+            topic.lower()
             updated_topic = ref.child(department).child(class_name).get()
+            updated_topic.lower()
             if updated_topic is None:
                 ref.child(department).child(class_name).set(topic)
             else:
-                updated_topic = ', ' + topic
-                ref.child(department).child(class_name).set(updated_topic)
-            
-            saved_data = ref.child(class_name).get()
-            if saved_data['topic'] == topic:
-                return True, 'Topic saved successfully'
-            else:
-                return False, 'Failed to save topic'
+                if updated_topic not in updated_topic.values():
+                    updated_topic = ', ' + topic
+                    ref.child(department).child(class_name).set(updated_topic)
+                    saved_data = ref.child(class_name).get()
+                    if saved_data['topic'] == topic:
+                        return True, 'Topic saved successfully'
+                    else:
+                        return False, 'Failed to save topic'
+                else:
+                    return True, 'Topic already in firebase db'
         except Exception as e:
             return False, str(e)
         
