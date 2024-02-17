@@ -13,9 +13,9 @@ from rest_framework.views import APIView
 
 # Create your views here.
 class YoutubeVideoView(APIView):
-    def scrape_youtube_videos(topic, department):
+    def scrape_youtube_videos(topic, class_name):
             api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
-            query = f'{topic} {department}'
+            query = f'{topic} {class_name}'
             url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=10&type=video'
             response = requests.get(url)
             data = response.json()
