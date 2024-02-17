@@ -13,9 +13,10 @@ from rest_framework.views import APIView
 
 # Create your views here.
 class YoutubeVideoView(APIView):
-    def scrape_youtube_videos(topic):
+    def scrape_youtube_videos(topic, department):
             api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
-            url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={topic}&part=snippet&maxResults=10&type=video'
+            query = f'{topic} {department}'
+            url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=10&type=video'
             response = requests.get(url)
             data = response.json()
             videos = [{'title': item['snippet']['title'], 'videoId': item['id']['videoId']} for item in data['items']]
@@ -77,4 +78,9 @@ class FirebaseHandler(View):
     def fetch_topics(class_name, topic_id):
         ref = db.reference(f'/Classes/{class_name}/{topic_id}')
         return ref.get()
+    
+    def fetch_class(class_name, department):
+        ref = db.reference('Classes')
+        class_key = ref.child(department).child(class_name).key
+        return class_key
     
