@@ -13,13 +13,15 @@ from rest_framework.views import APIView
 
 # Create your views here.
 class YoutubeVideoView(APIView):
-    def scrape_youtube_videos(topic, class_name):
+    def scrape_youtube_videos(self, topic, class_name):
             api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
             query = f'{topic} {class_name}'
-            url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=10&type=video'
+            url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=50&type=video'
             response = requests.get(url)
             data = response.json()
-            videos = [{'title': item['snippet']['title'], 'videoId': item['id']['videoId']} for item in data['items']]
+            videos = [{'title': item['snippet']['title'], 'videoId': item['id']['videoId'], 'url': f"https://www.youtube.com/watch?v={item['id']['videoId']}"} for item in data['items']]
+            for v in videos['videoId']:
+                self.store_video_id(v)
             return videos
         
     def get(self, request, class_name, topic_id):
@@ -27,7 +29,13 @@ class YoutubeVideoView(APIView):
         videos = self.scrape_youtube_videos(topic)
         return Response({'videos': videos})
 
-class FirebaseHandler(View):
+    def store_video_id(video_id):
+        ref = db.reference('Videos')
+        if video_id not in ref.get().keys():
+            ref.child(video_id).set(50)
+
+
+class FirebaseHandler(APIView):
     def save_to_firebase(self, department, class_name, topic):
         try:
             ref = db.reference('Classes')
