@@ -113,9 +113,45 @@ class YoutubeVideoView(APIView):
             url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=50&type=video'
             response = requests.get(url)
             data = response.json()
-            videos = [{'title': item['snippet']['title'], 'videoId': item['id']['videoId'], 'url': f"https://www.youtube.com/watch?v={item['id']['videoId']}"} for item in data['items']]
-            for v in videos['videoId']:
-                self.store_video_id(v)
+            items = data.get('items', [])
+
+            videos = []
+            replacements_needed = 0
+
+            for item in items:
+                video_id = item.get('id', {}).get('videoId')
+                if not video_id:
+                    continue
+
+                video_rating = db.reference(f'Videos/{video_id}').get()
+                if video_rating is None or video_rating >= 40:
+                    videos.append({
+                        'title': item['snippet']['title'],
+                        'videoId': video_id,
+                        'url': f"https://www.youtube.com/watch?v={video_id}"
+                    })
+                else:
+                    replacements_needed += 1
+
+            # Replace videos if replacements are needed
+            if replacements_needed > 0:
+                replacement_query = f'A Guide on how to do {topic}'
+                replacement_url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={replacement_query}&part=snippet&maxResults={replacements_needed}&type=video'
+                replacement_response = requests.get(replacement_url)
+                replacement_data = replacement_response.json()
+                replacement_items = replacement_data.get('items', [])
+
+                for item in replacement_items:
+                    video_id = item.get('id', {}).get('videoId')
+                    if not video_id:
+                        continue
+
+                    videos.append({
+                        'title': item['snippet']['title'],
+                        'videoId': video_id,
+                        'url': f"https://www.youtube.com/watch?v={video_id}"
+                    })
+
             return JsonResponse({'videos': videos})
         
     def get(self, request, class_name, topic_id):
@@ -123,7 +159,7 @@ class YoutubeVideoView(APIView):
         videos = self.scrape_youtube_videos(topic)
         return JsonResponse({'videos': videos})
 
-    def store_video_id(video_id):
+    def store_and_update_video_id(video_id):
         try:
             ref = db.reference('Videos')
             if video_id not in ref.get().keys():
