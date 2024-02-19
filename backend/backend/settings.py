@@ -94,6 +94,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
+YOUTUBE_API_KEY = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
+
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

@@ -4,14 +4,102 @@ from backend.settings import getPath
 from pathlib import Path
 from django.http import JsonResponse
 from django.shortcuts import render
-from backend.settings import getPath
-import firebase_admin.auth
 from firebase_admin import db
 from django.views import View
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from firebase_api.utils import get_video_duration
+from firebase_api.models import User
+from datetime import datetime, timedelta
+from django.conf import settings
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 # Create your views here.
+class YoutubeAPI:
+    def __init__(self):
+        self.api_key = settings.YOUTUBE_API_KEY
+    
+    def fetch_duration_from_youtube_api(self, video_id):
+        try:
+            youtube = build('youtube', 'v3', developerKey=self.api_key)
+            video_response = youtube.videos().list(
+                part='contentDetails',
+                id=video_id
+            ).execute()
+
+            duration = video_response['items'][0]['contentDetails']['duration']
+            duration_in_seconds = self.parse_duration(duration)
+            return duration_in_seconds
+        except HttpError as e:
+            # Handle API errors here
+            print(f"An error occurred: {e}")
+            return None
+        
+    def parse_duration(self, duration):
+        hours = 0
+        minutes = 0
+        seconds = 0
+
+        if 'H' in duration:
+            hours = int(duration.split('H')[0][2:])
+            duration = duration.split('H')[1]
+
+        if 'M' in duration:
+            minutes = int(duration.split('M')[0][2:])
+            duration = duration.split('M')[1]
+
+        if 'S' in duration:
+            seconds = int(duration.split('S')[0][2:])
+
+        total_seconds = hours * 3600 + minutes * 60 + seconds
+        return total_seconds
+
+class UserHandler(APIView):
+    def initialize_user(self, username):
+        ref = db.reference('Users')
+        if username not in ref.get().keys():
+            ref.child(username).set({
+                'streak': 0,
+                'credits': 0,
+                'last_login': None
+            })
+    
+    def check_consecutive_login(self, username):
+        user_ref = db.reference(f'Users/{username}')
+        user_data = user_ref.get()
+        last_login = user_data.get('last_login')
+        if last_login:
+            last_login_date = datetime.strptime(last_login, '%Y-%m-%d')
+            today_date = datetime.now().date()
+            if last_login_date == today_date - timedelta(days=1):
+                user_ref.update({'streak': user_data.get('streak', 0) + 1})
+            else:
+                user_ref.update({'streak': 0})
+        user_ref.update({'last_login': today_date.strftime('%Y-%m-%d')})
+
+    def earn_credits_for_watching_video(self, username, video_id, video_time):
+        try:
+            user_ref = db.reference(f'Users/{username}')
+            user_data = user_ref.get()
+            video_duration = get_video_duration(video_id)
+            if video_time >= video_duration / 2:
+                credits_earned = video_time // 60
+                user_ref.update({'credits': user_data.get('credits', 0) + credits_earned})
+                return JsonResponse({'message': f'Earned {credits_earned} credits for watching the video'}, status=200)
+            else:
+                return JsonResponse({'message': 'Did not earn credits for watching the video'}, status=200)
+        except Exception as e:
+            return JsonResponse({'message': str(e)}, status=500)
+
+    def post(self, request):
+        username = request.POST.get('username')
+        video_id = request.POST.get('video_id')
+        video_time = int(request.POST.get('video_time'))
+
+        self.check_consecutive_login(username)
+        return self.earn_credits_for_watching_video(username, video_id, video_time)
+
 class YoutubeVideoView(APIView):
     def scrape_youtube_videos(self, topic):
             api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
