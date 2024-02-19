@@ -110,7 +110,7 @@ class YoutubeVideoView(APIView):
     def scrape_youtube_videos(self, topic):
             api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
             query = f'A Guide on how to do {topic}'
-            url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=50&type=video'
+            url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=20&type=video'
             response = requests.get(url)
             data = response.json()
             items = data.get('items', [])
