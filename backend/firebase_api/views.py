@@ -30,11 +30,10 @@ class YoutubeAPI:
 
             duration = video_response['items'][0]['contentDetails']['duration']
             duration_in_seconds = self.parse_duration(duration)
-            return duration_in_seconds
-        except HttpError as e:
+            return JsonResponse({'duration': duration_in_seconds}, status=200)
             # Handle API errors here
-            print(f"An error occurred: {e}")
-            return None
+        except Exception as e:
+            return JsonResponse({'message': 'Bad request'}, status=400)
         
     def parse_duration(self, duration):
         hours = 0
@@ -95,10 +94,17 @@ class UserHandler(APIView):
     def post(self, request):
         username = request.POST.get('username')
         video_id = request.POST.get('video_id')
+        action = request.POST.get('action') #determine in frontend JSON whether or not action is login watch
         video_time = int(request.POST.get('video_time'))
 
-        self.check_consecutive_login(username)
-        return self.earn_credits_for_watching_video(username, video_id, video_time)
+        if action == 'login': 
+            self.check_consecutive_login(username)
+            return JsonResponse({'message': 'Success'}, status=201)
+        elif action == 'watch':
+            self.earn_credits_for_watching_video(username, video_id, video_time)
+            return JsonResponse({'message': 'Success'}, status=201)
+        else:
+            return JsonResponse({'message': 'Failure'}, status=400)
 
 class YoutubeVideoView(APIView):
     def scrape_youtube_videos(self, topic):
@@ -110,17 +116,21 @@ class YoutubeVideoView(APIView):
             videos = [{'title': item['snippet']['title'], 'videoId': item['id']['videoId'], 'url': f"https://www.youtube.com/watch?v={item['id']['videoId']}"} for item in data['items']]
             for v in videos['videoId']:
                 self.store_video_id(v)
-            return videos
+            return JsonResponse({'videos': videos})
         
     def get(self, request, class_name, topic_id):
         topic = FirebaseHandler.fetch_topics(class_name, topic_id)
         videos = self.scrape_youtube_videos(topic)
-        return Response({'videos': videos})
+        return JsonResponse({'videos': videos})
 
     def store_video_id(video_id):
-        ref = db.reference('Videos')
-        if video_id not in ref.get().keys():
-            ref.child(video_id).set(50)
+        try:
+            ref = db.reference('Videos')
+            if video_id not in ref.get().keys():
+                ref.child(video_id).set(50)
+            return JsonResponse({'message': 'Success'})
+        except Exception as e:
+            return JsonResponse({'message': 'Failure'}, status=400)
 
 
 class FirebaseHandler(APIView):
