@@ -105,6 +105,12 @@ class UserHandler(APIView):
             return JsonResponse({'message': 'Success'}, status=201)
         else:
             return JsonResponse({'message': 'Failure'}, status=400)
+        
+    def get(self, request, user_ref):
+        ref = db.reference('Users')
+        user_name = ref.child(user_ref).get().key
+        user_info = ref.child(user_ref).get()
+        return JsonResponse({'user_name': user_name, 'user_info': user_info})
 
 class YoutubeVideoView(APIView):
     def scrape_youtube_videos(self, topic):
