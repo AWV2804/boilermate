@@ -108,9 +108,22 @@ class UserHandler(APIView):
         
     def get(self, request, user_ref):
         ref = db.reference('Users')
-        user_name = ref.child(user_ref).get().key
         user_info = ref.child(user_ref).get()
-        return JsonResponse({'user_name': user_name, 'user_info': user_info})
+
+        if user_info:
+            username = user_info.get('username')
+            streaks = user_info.get('streaks')
+            credits = user_info.get('credits')
+            last_login_day = user_info.get('last_login_day')
+
+            return JsonResponse({
+                'username': username,
+                'streaks': streaks,
+                'credits': credits,
+                'last_login_day': last_login_day
+            })
+        else:
+            return JsonResponse({'message': 'User not found'}, status=404)
 
 class YoutubeVideoView(APIView):
     def scrape_youtube_videos(self, topic):
