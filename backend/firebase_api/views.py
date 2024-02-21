@@ -71,7 +71,7 @@ class UserHandler(APIView):
         if last_login:
             last_login_date = datetime.strptime(last_login, '%Y-%m-%d')
             today_date = datetime.now().date()
-            if last_login_date == today_date - timedelta(days=1):
+            if last_login_date <= today_date - timedelta(days=1):
                 user_ref.update({'streak': user_data.get('streak', 0) + 1})
             else:
                 user_ref.update({'streak': 0})
