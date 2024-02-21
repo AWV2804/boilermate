@@ -10,11 +10,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "@expo/metro-config": "^0.17.4",
     "@react-native-async-storage/async-storage": "^1.21.0",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
-    "expo": "^50.0.0",
+    "expo": "~50.0.7",
     "expo-status-bar": "~1.11.1",
     "firebase": "^10.8.0",
     "jest": "^29.3.1",
