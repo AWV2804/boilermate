@@ -56,13 +56,17 @@ class YoutubeAPI:
 
 class UserHandler(APIView):
     def initialize_user(self, username):
-        ref = db.reference('Users')
-        if username not in ref.get().keys():
-            ref.child(username).set({
-                'streak': 0,
-                'credits': 0,
-                'last_login': None
-            })
+        try:
+            ref = db.reference('Users')
+            if username not in ref.get().keys():
+                ref.child(username).set({
+                    'streak': 0,
+                    'credits': 0,
+                    'last_login': None
+                })
+            return True, 'success'
+        except Exception as e:
+            return False, e
     
     def check_consecutive_login(self, username):
         user_ref = db.reference(f'Users/{username}')
@@ -92,10 +96,15 @@ class UserHandler(APIView):
             return JsonResponse({'message': str(e)}, status=500)
 
     def post(self, request):
-        username = request.POST.get('username')
-        video_id = request.POST.get('video_id')
-        action = request.POST.get('action') #determine in frontend JSON whether or not action is login watch
-        video_time = int(request.POST.get('video_time'))
+        username = request.GET.get('username')
+        video_id = request.GET.get('video_id')
+        action = request.GET.get('action') #determine in frontend JSON whether or not action is login watch
+        video_time = int(request.GET.get('video_time'))
+        
+        if db.reference(f'Users/{username}').get() is None:
+            works, errMessage = self.initialize_user(username)
+            if works == False:
+                return JsonResponse({'message': errMessage}, status=400)
 
         if action == 'login': 
             self.check_consecutive_login(username)
@@ -109,8 +118,9 @@ class UserHandler(APIView):
     def get(self, request, user_ref):
         ref = db.reference('Users')
         user_info = ref.child(user_ref).get()
-
-        if user_info:
+        if user_info is None:
+            return JsonResponse({'message': 'User not found'}, status=404)
+        elif user_info:
             username = user_info.get('username')
             streaks = user_info.get('streaks')
             credits = user_info.get('credits')
@@ -134,7 +144,6 @@ class YoutubeVideoView(APIView):
         api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
         query = f"A Guide on how to do {topic} in {class_name}"
         url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=20&type=video'
-        print(url)
         response = requests.get(url)
         data = response.json()
         items = data.get('items', [])
@@ -142,7 +151,6 @@ class YoutubeVideoView(APIView):
         videos = []
         replacements_needed = 0
 
-        print(items)
         for item in items:
             video_id = item.get('id', {}).get('videoId')
             if not video_id:
@@ -164,8 +172,7 @@ class YoutubeVideoView(APIView):
 
         # Replace videos if replacements are needed
         if replacements_needed > 0:
-            replacement_query = f'A Guide on how to do {topic} in {class_name}'
-            replacement_url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={replacement_query}&part=snippet&maxResults={replacements_needed}&type=video'
+            replacement_url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults={replacements_needed}&type=video'
             replacement_response = requests.get(replacement_url)
             replacement_data = replacement_response.json()
             replacement_items = replacement_data.get('items', [])
@@ -188,7 +195,6 @@ class YoutubeVideoView(APIView):
         class_name = request.GET.get('class_name')
         topic_id = request.GET.get('topic')
         class_name = re.sub(r'^.*?-\s*', '', class_name)
-        print(class_name)
         save_success = FirebaseHandler.save_to_firebase(dept, class_name, topic_id)
         if save_success == False:
             return JsonResponse({'error': 'failed to save to firebase'}, status=500)
