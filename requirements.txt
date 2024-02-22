@@ -65,3 +65,4 @@ tzdata==2023.4
 uritemplate==4.1.1
 urllib3==1.26.18
 Wave==0.0.2
+Wheel==0.42.0
