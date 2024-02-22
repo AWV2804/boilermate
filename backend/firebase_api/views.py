@@ -194,16 +194,6 @@ class YoutubeVideoView(APIView):
             return JsonResponse({'error': 'failed to save to firebase'}, status=500)
         videos = self.scrape_youtube_videos(topic_id, class_name)
         return JsonResponse({'videos': videos},status=201)
-    
-    @classmethod
-    def store_and_update_video_id(cls, video_id):
-        try:
-            ref = db.reference('Videos')
-            if video_id not in ref.get().keys():
-                ref.child(video_id).set(50)
-            return True, 'successfully initialized'
-        except Exception as e:
-            return False, e
 
 
 class FirebaseHandler(APIView):
