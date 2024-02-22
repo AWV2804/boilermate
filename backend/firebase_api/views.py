@@ -8,7 +8,6 @@ from firebase_admin import db
 from django.views import View
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from firebase_api.utils import get_video_duration
 from firebase_api.models import User
 from datetime import datetime, timedelta
 from django.conf import settings
@@ -53,6 +52,10 @@ class YoutubeAPI:
 
         total_seconds = hours * 3600 + minutes * 60 + seconds
         return total_seconds
+    
+    def get_video_duration(video_id):
+        video_duration_seconds = YoutubeAPI.fetch_duration_from_youtube_api(video_id)
+        return video_duration_seconds
 
 class UserHandler(APIView):
     def initialize_user(self, username):
