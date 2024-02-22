@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import re
 
 # Create your views here.
 class YoutubeAPI:
@@ -130,70 +131,79 @@ class UserHandler(APIView):
 
 class YoutubeVideoView(APIView):
     def scrape_youtube_videos(self, topic, class_name):
-            api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
-            query = f'A Guide on how to do {topic} in {class_name}'
-            url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=20&type=video'
-            response = requests.get(url)
-            data = response.json()
-            items = data.get('items', [])
+        api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
+        query = f"A Guide on how to do {topic} in {class_name}"
+        url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=20&type=video'
+        print(url)
+        response = requests.get(url)
+        data = response.json()
+        items = data.get('items', [])
+        
+        videos = []
+        replacements_needed = 0
 
-            videos = []
-            replacements_needed = 0
+        print(items)
+        for item in items:
+            video_id = item.get('id', {}).get('videoId')
+            if not video_id:
+                continue
+            
+            video_ref = db.reference(f'Videos/{video_id}')
+            if video_ref.get() is None:
+                video_ref.set(50)
 
-            for item in items:
+            video_rating = video_ref.get()
+            if video_rating is None or video_rating >= 40:
+                videos.append({
+                    'title': item['snippet']['title'],
+                    'videoId': video_id,
+                    'url': f"https://www.youtube.com/watch?v={video_id}"
+                })
+            else:
+                replacements_needed += 1
+
+        # Replace videos if replacements are needed
+        if replacements_needed > 0:
+            replacement_query = f'A Guide on how to do {topic} in {class_name}'
+            replacement_url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={replacement_query}&part=snippet&maxResults={replacements_needed}&type=video'
+            replacement_response = requests.get(replacement_url)
+            replacement_data = replacement_response.json()
+            replacement_items = replacement_data.get('items', [])
+
+            for item in replacement_items:
                 video_id = item.get('id', {}).get('videoId')
                 if not video_id:
                     continue
 
-                video_rating = db.reference(f'Videos/{video_id}').get()
-                if video_rating is None or video_rating >= 40:
-                    videos.append({
-                        'title': item['snippet']['title'],
-                        'videoId': video_id,
-                        'url': f"https://www.youtube.com/watch?v={video_id}"
-                    })
-                else:
-                    replacements_needed += 1
+                videos.append({
+                    'title': item['snippet']['title'],
+                    'videoId': video_id,
+                    'url': f"https://www.youtube.com/watch?v={video_id}"
+                })
 
-            # Replace videos if replacements are needed
-            if replacements_needed > 0:
-                replacement_query = f'A Guide on how to do {topic}'
-                replacement_url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={replacement_query}&part=snippet&maxResults={replacements_needed}&type=video'
-                replacement_response = requests.get(replacement_url)
-                replacement_data = replacement_response.json()
-                replacement_items = replacement_data.get('items', [])
-
-                for item in replacement_items:
-                    video_id = item.get('id', {}).get('videoId')
-                    if not video_id:
-                        continue
-
-                    videos.append({
-                        'title': item['snippet']['title'],
-                        'videoId': video_id,
-                        'url': f"https://www.youtube.com/watch?v={video_id}"
-                    })
-
-            return videos
+        return videos
         
     def post(self, request):
-        dept = request.POST.get('deptartment')
-        class_name = request.POST.get('class_name')
-        topic_id = request.POST.get('topic_id')
+        dept = request.GET.get('department')
+        class_name = request.GET.get('class_name')
+        topic_id = request.GET.get('topic')
+        class_name = re.sub(r'^.*?-\s*', '', class_name)
+        print(class_name)
         save_success = FirebaseHandler.save_to_firebase(dept, class_name, topic_id)
         if save_success == False:
             return JsonResponse({'error': 'failed to save to firebase'}, status=500)
         videos = self.scrape_youtube_videos(topic_id, class_name)
         return JsonResponse({'videos': videos},status=201)
-
-    def store_and_update_video_id(video_id):
+    
+    @classmethod
+    def store_and_update_video_id(cls, video_id):
         try:
             ref = db.reference('Videos')
             if video_id not in ref.get().keys():
                 ref.child(video_id).set(50)
-            return JsonResponse({'message': 'Success'}, status=201)
+            return True, 'successfully initialized'
         except Exception as e:
-            return JsonResponse({'message': e}, status=400)
+            return False, e
 
 
 class FirebaseHandler(APIView):
@@ -204,15 +214,17 @@ class FirebaseHandler(APIView):
             class_name = class_name.replace('/', '\u2215')
             topic.lower()
             updated_topic = ref.child(department).child(class_name).get()
-            updated_topic.lower()
+            updated_topic = updated_topic.lower() if updated_topic else ''
             if updated_topic is None:
                 ref.child(department).child(class_name).set(topic)
             else:
-                if updated_topic not in updated_topic.values():
-                    updated_topic = ', ' + topic
+                topics_list = [t.strip() for t in updated_topic.split(',')]
+                if topic not in topics_list:
+                    topics_list.append(topic)
+                    updated_topic = ', '.join(topics_list)
                     ref.child(department).child(class_name).set(updated_topic)
-                    saved_data = ref.child(class_name).get()
-                    if saved_data['topic'] == topic:
+                    saved_data = ref.child(department).child(class_name).get()
+                    if saved_data == updated_topic:
                         return True, 'Topic saved successfully'
                     else:
                         return False, 'Failed to save topic'
