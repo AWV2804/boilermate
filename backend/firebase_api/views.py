@@ -52,10 +52,6 @@ class YoutubeAPI:
 
         total_seconds = hours * 3600 + minutes * 60 + seconds
         return total_seconds
-    
-    def get_video_duration(video_id):
-        video_duration_seconds = YoutubeAPI.fetch_duration_from_youtube_api(video_id)
-        return video_duration_seconds
 
 class UserHandler(APIView):
     def initialize_user(self, username):
@@ -84,7 +80,7 @@ class UserHandler(APIView):
         try:
             user_ref = db.reference(f'Users/{username}')
             user_data = user_ref.get()
-            video_duration = get_video_duration(video_id)
+            video_duration = self.get_video_duration(video_id)
             if video_time >= video_duration / 2:
                 credits_earned = video_time // 60
                 user_ref.update({'credits': user_data.get('credits', 0) + credits_earned})
@@ -127,11 +123,15 @@ class UserHandler(APIView):
             })
         else:
             return JsonResponse({'message': 'User not found'}, status=404)
+    
+    def get_video_duration(video_id):
+        video_duration_seconds = YoutubeAPI.fetch_duration_from_youtube_api(video_id)
+        return video_duration_seconds
 
 class YoutubeVideoView(APIView):
-    def scrape_youtube_videos(self, topic):
+    def scrape_youtube_videos(self, topic, class_name):
             api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
-            query = f'A Guide on how to do {topic}'
+            query = f'A Guide on how to do {topic} in {class_name}'
             url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=20&type=video'
             response = requests.get(url)
             data = response.json()
@@ -174,25 +174,31 @@ class YoutubeVideoView(APIView):
                         'url': f"https://www.youtube.com/watch?v={video_id}"
                     })
 
-            return JsonResponse({'videos': videos})
+            return videos
         
-    def get(self, request, class_name, topic_id):
-        topic = FirebaseHandler.fetch_topics(class_name, topic_id)
-        videos = self.scrape_youtube_videos(topic)
-        return JsonResponse({'videos': videos})
+    def post(self, request):
+        dept = request.POST.get('deptartment')
+        class_name = request.POST.get('class_name')
+        topic_id = request.POST.get('topic_id')
+        save_success = FirebaseHandler.save_to_firebase(dept, class_name, topic_id)
+        if save_success == False:
+            return JsonResponse({'error': 'failed to save to firebase'}, status=500)
+        videos = self.scrape_youtube_videos(topic_id, class_name)
+        return JsonResponse({'videos': videos},status=201)
 
     def store_and_update_video_id(video_id):
         try:
             ref = db.reference('Videos')
             if video_id not in ref.get().keys():
                 ref.child(video_id).set(50)
-            return JsonResponse({'message': 'Success'})
+            return JsonResponse({'message': 'Success'}, status=201)
         except Exception as e:
-            return JsonResponse({'message': 'Failure'}, status=400)
+            return JsonResponse({'message': e}, status=400)
 
 
 class FirebaseHandler(APIView):
-    def save_to_firebase(self, department, class_name, topic):
+    @classmethod
+    def save_to_firebase(cls, department, class_name, topic):
         try:
             ref = db.reference('Classes')
             class_name = class_name.replace('/', '\u2215')
@@ -226,7 +232,7 @@ class FirebaseHandler(APIView):
         if success:
             return JsonResponse({'message': message}, status=201)
         else:
-            return JsonResponse({'message': message}, status=500)
+            return JsonResponse({'message': message}, status=201)
         
     def get(self, class_name):
         try:
