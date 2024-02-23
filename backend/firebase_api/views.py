@@ -58,27 +58,36 @@ class UserHandler(APIView):
         try:
             ref = db.reference('Users')
             if username not in ref.get().keys():
+                current_datetime = datetime.now().strftime('%Y-%m-%d')
                 ref.child(username).set({
                     'streak': 0,
                     'credits': 0,
-                    'last_login': None
+                    'last_login': current_datetime
                 })
             return True, 'success'
         except Exception as e:
-            return False, e
+            return False, str(e)
     
     def check_consecutive_login(self, username):
-        user_ref = db.reference(f'Users/{username}')
-        user_data = user_ref.get()
-        last_login = user_data.get('last_login')
-        if last_login:
-            last_login_date = datetime.strptime(last_login, '%Y-%m-%d')
-            today_date = datetime.now().date()
-            if last_login_date <= today_date - timedelta(days=1):
-                user_ref.update({'streak': user_data.get('streak', 0) + 1})
-            else:
-                user_ref.update({'streak': 0})
-        user_ref.update({'last_login': today_date.strftime('%Y-%m-%d')})
+        try:
+            user_ref = db.reference(f'Users/{username}')
+            if user_ref is None:
+                return JsonResponse({'message': 'User not found in database'})
+            user_data = user_ref.get()
+            last_login = user_data.get('last_login')
+            if last_login:
+                last_login_date = datetime.strptime(last_login, '%Y-%m-%d').date()
+                today_date = datetime.now().date()
+                if last_login_date == today_date:
+                    return True, 'user already logged in today'
+                elif last_login_date >= today_date - timedelta(days=1):
+                    user_ref.update({'streak': user_data.get('streak', 0) + 1})
+                else:
+                    user_ref.update({'streak': 0})
+            user_ref.update({'last_login': today_date.strftime('%Y-%m-%d')})
+            return True, 'success'
+        except Exception as e:
+            return False, str(e)
 
     def earn_credits_for_watching_video(self, username, video_id, video_time):
         try:
@@ -96,19 +105,26 @@ class UserHandler(APIView):
 
     def post(self, request):
         username = request.GET.get('username')
-        video_id = request.GET.get('video_id')
+        username = re.sub(r'@.*', '', username)
         action = request.GET.get('action') #determine in frontend JSON whether or not action is login watch
-        video_time = int(request.GET.get('video_time'))
-        
-        if db.reference(f'Users/{username}').get() is None:
-            works, errMessage = self.initialize_user(username)
-            if works == False:
-                return JsonResponse({'message': errMessage}, status=400)
-
+        if action == 'create':
+            if db.reference(f'Users/{username}').get() is None:
+                works, errMessage = self.initialize_user(username)
+                if works == False:
+                    return JsonResponse({'message': errMessage},status=400)
+                else:
+                    return JsonResponse({'message': errMessage},status=201)
+            else:
+                return JsonResponse({'message': 'user already registered to firebase domain'},status=200)
         if action == 'login': 
-            self.check_consecutive_login(username)
-            return JsonResponse({'message': 'Success'}, status=201)
+            boolean, message = self.check_consecutive_login(username)
+            if boolean == False:
+                return JsonResponse({'message': message}, status=400)
+            else:
+                return JsonResponse({'message': message}, status=201)
         elif action == 'watch':
+            video_time = int(request.GET.get('video_time'))
+            video_id = request.GET.get('video_id')
             self.earn_credits_for_watching_video(username, video_id, video_time)
             return JsonResponse({'message': 'Success'}, status=201)
         else:
