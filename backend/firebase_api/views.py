@@ -13,6 +13,8 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import re
+import pytz
 
 # Create your views here.
 class YoutubeAPI:
@@ -30,7 +32,6 @@ class YoutubeAPI:
             duration = video_response['items'][0]['contentDetails']['duration']
             duration_in_seconds = self.parse_duration(duration)
             return JsonResponse({'duration': duration_in_seconds}, status=200)
-            # Handle API errors here
         except Exception as e:
             return JsonResponse({'message': 'Bad request'}, status=400)
         
@@ -55,26 +56,41 @@ class YoutubeAPI:
 
 class UserHandler(APIView):
     def initialize_user(self, username):
-        ref = db.reference('Users')
-        if username not in ref.get().keys():
-            ref.child(username).set({
-                'streak': 0,
-                'credits': 0,
-                'last_login': None
-            })
+        try:
+            ref = db.reference('Users')
+            if username not in ref.get().keys():
+                current_datetime = datetime.now().strftime('%Y-%m-%d')
+                ref.child(username).set({
+                    'streak': 0,
+                    'credits': 0,
+                    'last_login': current_datetime
+                })
+            return True, 'success'
+        except Exception as e:
+            return False, str(e)
     
     def check_consecutive_login(self, username):
-        user_ref = db.reference(f'Users/{username}')
-        user_data = user_ref.get()
-        last_login = user_data.get('last_login')
-        if last_login:
-            last_login_date = datetime.strptime(last_login, '%Y-%m-%d')
-            today_date = datetime.now().date()
-            if last_login_date <= today_date - timedelta(days=1):
-                user_ref.update({'streak': user_data.get('streak', 0) + 1})
-            else:
-                user_ref.update({'streak': 0})
-        user_ref.update({'last_login': today_date.strftime('%Y-%m-%d')})
+        try:
+            user_ref = db.reference(f'Users/{username}')
+            if user_ref is None:
+                return JsonResponse({'message': 'User not found in database'})
+            user_data = user_ref.get()
+            last_login = user_data.get('last_login')
+            if last_login:
+                last_login_date = datetime.strptime(last_login, '%Y-%m-%d').date()
+                today_date = datetime.now(pytz.utc).date()
+                print(today_date)
+                print(last_login_date)
+                if last_login_date == today_date:
+                    return True, 'user already logged in today'
+                elif last_login_date >= today_date - timedelta(days=1):
+                    user_ref.update({'streak': user_data.get('streak', 0) + 1})
+                else:
+                    user_ref.update({'streak': 0})
+            user_ref.update({'last_login': today_date.strftime('%Y-%m-%d')})
+            return True, 'success'
+        except Exception as e:
+            return False, str(e)
 
     def earn_credits_for_watching_video(self, username, video_id, video_time):
         try:
@@ -91,15 +107,27 @@ class UserHandler(APIView):
             return JsonResponse({'message': str(e)}, status=500)
 
     def post(self, request):
-        username = request.POST.get('username')
-        video_id = request.POST.get('video_id')
-        action = request.POST.get('action') #determine in frontend JSON whether or not action is login watch
-        video_time = int(request.POST.get('video_time'))
-
+        username = request.GET.get('username')
+        username = re.sub(r'@.*', '', username)
+        action = request.GET.get('action') #determine in frontend JSON whether or not action is login watch
+        if action == 'create':
+            if db.reference(f'Users/{username}').get() is None:
+                works, errMessage = self.initialize_user(username)
+                if works == False:
+                    return JsonResponse({'message': errMessage},status=400)
+                else:
+                    return JsonResponse({'message': errMessage},status=201)
+            else:
+                return JsonResponse({'message': 'user already registered to firebase domain'},status=200)
         if action == 'login': 
-            self.check_consecutive_login(username)
-            return JsonResponse({'message': 'Success'}, status=201)
+            boolean, message = self.check_consecutive_login(username)
+            if boolean == False:
+                return JsonResponse({'message': message}, status=400)
+            else:
+                return JsonResponse({'message': message}, status=201)
         elif action == 'watch':
+            video_time = int(request.GET.get('video_time'))
+            video_id = request.GET.get('video_id')
             self.earn_credits_for_watching_video(username, video_id, video_time)
             return JsonResponse({'message': 'Success'}, status=201)
         else:
@@ -108,8 +136,9 @@ class UserHandler(APIView):
     def get(self, request, user_ref):
         ref = db.reference('Users')
         user_info = ref.child(user_ref).get()
-
-        if user_info:
+        if user_info is None:
+            return JsonResponse({'message': 'User not found'}, status=404)
+        elif user_info:
             username = user_info.get('username')
             streaks = user_info.get('streaks')
             credits = user_info.get('credits')
@@ -130,70 +159,65 @@ class UserHandler(APIView):
 
 class YoutubeVideoView(APIView):
     def scrape_youtube_videos(self, topic, class_name):
-            api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
-            query = f'A Guide on how to do {topic} in {class_name}'
-            url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=20&type=video'
-            response = requests.get(url)
-            data = response.json()
-            items = data.get('items', [])
+        api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
+        query = f"A Guide on how to do {topic} in {class_name}"
+        url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=20&type=video'
+        response = requests.get(url)
+        data = response.json()
+        items = data.get('items', [])
+        
+        videos = []
+        replacements_needed = 0
 
-            videos = []
-            replacements_needed = 0
+        for item in items:
+            video_id = item.get('id', {}).get('videoId')
+            if not video_id:
+                continue
+            
+            video_ref = db.reference(f'Videos/{video_id}')
+            if video_ref.get() is None:
+                video_ref.set(50)
 
-            for item in items:
+            video_rating = video_ref.get()
+            if video_rating is None or video_rating >= 40:
+                videos.append({
+                    'title': item['snippet']['title'],
+                    'videoId': video_id,
+                    'url': f"https://www.youtube.com/watch?v={video_id}"
+                })
+            else:
+                replacements_needed += 1
+
+        # Replace videos if replacements are needed
+        if replacements_needed > 0:
+            replacement_url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults={replacements_needed}&type=video'
+            replacement_response = requests.get(replacement_url)
+            replacement_data = replacement_response.json()
+            replacement_items = replacement_data.get('items', [])
+
+            for item in replacement_items:
                 video_id = item.get('id', {}).get('videoId')
                 if not video_id:
                     continue
 
-                video_rating = db.reference(f'Videos/{video_id}').get()
-                if video_rating is None or video_rating >= 40:
-                    videos.append({
-                        'title': item['snippet']['title'],
-                        'videoId': video_id,
-                        'url': f"https://www.youtube.com/watch?v={video_id}"
-                    })
-                else:
-                    replacements_needed += 1
+                videos.append({
+                    'title': item['snippet']['title'],
+                    'videoId': video_id,
+                    'url': f"https://www.youtube.com/watch?v={video_id}"
+                })
 
-            # Replace videos if replacements are needed
-            if replacements_needed > 0:
-                replacement_query = f'A Guide on how to do {topic}'
-                replacement_url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={replacement_query}&part=snippet&maxResults={replacements_needed}&type=video'
-                replacement_response = requests.get(replacement_url)
-                replacement_data = replacement_response.json()
-                replacement_items = replacement_data.get('items', [])
-
-                for item in replacement_items:
-                    video_id = item.get('id', {}).get('videoId')
-                    if not video_id:
-                        continue
-
-                    videos.append({
-                        'title': item['snippet']['title'],
-                        'videoId': video_id,
-                        'url': f"https://www.youtube.com/watch?v={video_id}"
-                    })
-
-            return videos
+        return videos
         
     def post(self, request):
-        dept = request.POST.get('deptartment')
-        class_name = request.POST.get('class_name')
-        topic_id = request.POST.get('topic_id')
+        dept = request.GET.get('department')
+        class_name = request.GET.get('class_name')
+        topic_id = request.GET.get('topic')
+        class_name = re.sub(r'^.*?-\s*', '', class_name)
         save_success = FirebaseHandler.save_to_firebase(dept, class_name, topic_id)
         if save_success == False:
             return JsonResponse({'error': 'failed to save to firebase'}, status=500)
         videos = self.scrape_youtube_videos(topic_id, class_name)
         return JsonResponse({'videos': videos},status=201)
-
-    def store_and_update_video_id(video_id):
-        try:
-            ref = db.reference('Videos')
-            if video_id not in ref.get().keys():
-                ref.child(video_id).set(50)
-            return JsonResponse({'message': 'Success'}, status=201)
-        except Exception as e:
-            return JsonResponse({'message': e}, status=400)
 
 
 class FirebaseHandler(APIView):
@@ -204,15 +228,17 @@ class FirebaseHandler(APIView):
             class_name = class_name.replace('/', '\u2215')
             topic.lower()
             updated_topic = ref.child(department).child(class_name).get()
-            updated_topic.lower()
+            updated_topic = updated_topic.lower() if updated_topic else ''
             if updated_topic is None:
                 ref.child(department).child(class_name).set(topic)
             else:
-                if updated_topic not in updated_topic.values():
-                    updated_topic = ', ' + topic
+                topics_list = [t.strip() for t in updated_topic.split(',')]
+                if topic not in topics_list:
+                    topics_list.append(topic)
+                    updated_topic = ', '.join(topics_list)
                     ref.child(department).child(class_name).set(updated_topic)
-                    saved_data = ref.child(class_name).get()
-                    if saved_data['topic'] == topic:
+                    saved_data = ref.child(department).child(class_name).get()
+                    if saved_data == updated_topic:
                         return True, 'Topic saved successfully'
                     else:
                         return False, 'Failed to save topic'

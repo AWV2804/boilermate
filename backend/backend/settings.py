@@ -23,6 +23,8 @@ firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://boilermate-b3fcd-default-rtdb.firebaseio.com'
 })
 
+TIME_ZONE = 'UTC'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
