@@ -153,8 +153,6 @@ class UserHandler(APIView):
                 'credits': credits,
                 'last_login_day': last_login_day
             })
-        else:
-            return JsonResponse({'message': 'User not found'}, status=404)
     
     def get_video_duration(video_id):
         video_duration_seconds = YoutubeAPI.fetch_duration_from_youtube_api(video_id)
