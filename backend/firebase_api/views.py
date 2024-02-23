@@ -136,7 +136,6 @@ class UserHandler(APIView):
         user_ref = re.sub(r'@.*', '', user_ref)
         ref = db.reference('Users')
         user_info = ref.child(user_ref).get()
-        print(user_info)
         if user_info is None:
             return JsonResponse({'message': 'User not found'}, status=404)
         elif user_info:
