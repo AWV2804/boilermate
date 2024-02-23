@@ -133,16 +133,19 @@ class UserHandler(APIView):
         else:
             return JsonResponse({'message': 'Failure'}, status=400)
         
-    def get(self, request, user_ref):
+    def get(self, request):
+        user_ref = request.GET.get('username')
+        user_ref = re.sub(r'@.*', '', user_ref)
         ref = db.reference('Users')
         user_info = ref.child(user_ref).get()
+        print(user_info)
         if user_info is None:
             return JsonResponse({'message': 'User not found'}, status=404)
         elif user_info:
-            username = user_info.get('username')
-            streaks = user_info.get('streaks')
+            username = ref.child(user_ref).key #username
+            streaks = user_info.get('streak')
             credits = user_info.get('credits')
-            last_login_day = user_info.get('last_login_day')
+            last_login_day = user_info.get('last_login')
 
             return JsonResponse({
                 'username': username,
