@@ -31,7 +31,6 @@ class YoutubeAPI:
             duration = video_response['items'][0]['contentDetails']['duration']
             duration_in_seconds = self.parse_duration(duration)
             return JsonResponse({'duration': duration_in_seconds}, status=200)
-            # Handle API errors here
         except Exception as e:
             return JsonResponse({'message': 'Bad request'}, status=400)
         
