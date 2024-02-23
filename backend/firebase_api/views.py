@@ -79,8 +79,6 @@ class UserHandler(APIView):
             if last_login:
                 last_login_date = datetime.strptime(last_login, '%Y-%m-%d').date()
                 today_date = datetime.now(pytz.utc).date()
-                print(today_date)
-                print(last_login_date)
                 if last_login_date == today_date:
                     return True, 'user already logged in today'
                 elif last_login_date >= today_date - timedelta(days=1):
