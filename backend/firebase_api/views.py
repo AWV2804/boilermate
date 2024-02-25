@@ -272,16 +272,7 @@ class YoutubeVideoView(APIView):
                 video_id = item.get('id', {}).get('videoId')
                 if not video_id:
                     continue
-            for item in replacement_items:
-                video_id = item.get('id', {}).get('videoId')
-                if not video_id:
-                    continue
 
-                videos.append({
-                    'title': item['snippet']['title'],
-                    'videoId': video_id,
-                    'url': f"https://www.youtube.com/watch?v={video_id}"
-                })
                 videos.append({
                     'title': item['snippet']['title'],
                     'videoId': video_id,
@@ -318,8 +309,6 @@ class YoutubeVideoView(APIView):
 class FirebaseHandler(APIView):
     @classmethod
     def save_to_firebase(cls, department, class_name, topic):
-    @classmethod
-    def save_to_firebase(cls, department, class_name, topic):
         try:
             ref = db.reference('Classes')
             class_name = class_name.replace('/', '\u2215')
@@ -341,7 +330,7 @@ class FirebaseHandler(APIView):
                     ref.child(department).child(class_name).set(updated_topic)
                     saved_data = ref.child(department).child(class_name).get()
                     if saved_data == updated_topic:
-                    saved_data = ref.child(department).child(class_name).get()
+                        saved_data = ref.child(department).child(class_name).get()
                     if saved_data == updated_topic:
                         return True, 'Topic saved successfully'
                     else:

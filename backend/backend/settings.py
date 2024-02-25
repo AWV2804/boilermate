@@ -43,7 +43,7 @@ DEBUG = True
 ALLOWED_HOSTS = [] # add firebase in here later
 
 CORS_ORIGIN_WHITELIST = [
-    'http://100.64.134.204:19000',
+    'http://100.64.134.204:19000'
 ]
 
 # Application definition

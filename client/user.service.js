@@ -24,16 +24,6 @@ class UserService {
         console.error('Error fetching YouTube videos:', error);
         return null;
       }
-
-      const res = await axios.post(url);
-      // const res = await axios.post(`${API_URL}scrape-youtube-videos/`);
-      console.log("got into function3")
-      if (res.status != 201){
-        console.error("we weren't able to get the topic videos")
-        return
-      }
-      console.log(res.data)
-      return res.data
     }
 }
 
