@@ -15,8 +15,6 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import re
 import pytz
-import re
-import pytz
 
 # Create your views here.
 class YoutubeAPI:
@@ -70,18 +68,6 @@ class UserHandler(APIView):
             return True, 'success'
         except Exception as e:
             return False, str(e)
-        try:
-            ref = db.reference('Users')
-            if username not in ref.get().keys():
-                current_datetime = datetime.now().strftime('%Y-%m-%d')
-                ref.child(username).set({
-                    'streak': 0,
-                    'credits': 0,
-                    'last_login': current_datetime
-                })
-            return True, 'success'
-        except Exception as e:
-            return False, str(e)
     
     def check_consecutive_login(self, username):
         try:
@@ -93,8 +79,6 @@ class UserHandler(APIView):
             if last_login:
                 last_login_date = datetime.strptime(last_login, '%Y-%m-%d').date()
                 today_date = datetime.now(pytz.utc).date()
-                print(today_date)
-                print(last_login_date)
                 if last_login_date == today_date:
                     return True, 'user already logged in today'
                 elif last_login_date >= today_date - timedelta(days=1):
@@ -152,11 +136,6 @@ class UserHandler(APIView):
                 return JsonResponse({'message': message}, status=400)
             else:
                 return JsonResponse({'message': message}, status=201)
-            boolean, message = self.check_consecutive_login(username)
-            if boolean == False:
-                return JsonResponse({'message': message}, status=400)
-            else:
-                return JsonResponse({'message': message}, status=201)
         elif action == 'watch':
             video_time = int(request.GET.get('video_time'))
             video_id = request.GET.get('video_id')
@@ -171,15 +150,12 @@ class UserHandler(APIView):
         user_ref = request.GET.get('username')
         user_ref = re.sub(r'@.*', '', user_ref)
         ref = db.reference('Users')
-        # user_info = ref.child(user_ref).get.key()
-        # user_info = ref.get.key(user_ref)
         user_info = ref.child(user_ref).get()
-        print(user_info)
         if user_info is None:
             return JsonResponse({'message': 'User not found'}, status=404)
         elif user_info:
-            username = user_info.get('username')
-            streaks = user_info.get('streaks')
+            username = ref.child(user_ref).key #username
+            streaks = user_info.get('streak')
             credits = user_info.get('credits')
             last_login_day = user_info.get('last_login')
 
@@ -189,8 +165,6 @@ class UserHandler(APIView):
                 'credits': credits,
                 'last_login_day': last_login_day
             })
-        else:
-            return JsonResponse({'message': 'User not found'}, status=404)
     
     def get_video_duration(video_id):
         video_duration_seconds = YoutubeAPI.fetch_duration_from_youtube_api(video_id)
@@ -207,16 +181,6 @@ class YoutubeVideoView(APIView):
         
         videos = []
         replacements_needed = 0
-    def scrape_youtube_videos(self, topic, class_name):
-        api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
-        query = f"A Guide on how to do {topic} in {class_name}"
-        url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=20&type=video'
-        response = requests.get(url)
-        data = response.json()
-        items = data.get('items', [])
-        
-        videos = []
-        replacements_needed = 0
 
         for item in items:
             video_id = item.get('id', {}).get('videoId')
@@ -291,7 +255,6 @@ class YoutubeVideoView(APIView):
         return videos
         
     def post(self, request):
-        print("get into post")
         dept = request.GET.get('department')
         class_name = request.GET.get('class_name')
         topic_id = request.GET.get('topic')
@@ -301,7 +264,6 @@ class YoutubeVideoView(APIView):
             return JsonResponse({'error': 'failed to save to firebase'}, status=500)
         videos = self.scrape_youtube_videos(topic_id, class_name)
         return JsonResponse({'videos': videos},status=201)
-        return videos
         
     def post(self, request):
         dept = request.GET.get('department')
@@ -318,14 +280,11 @@ class YoutubeVideoView(APIView):
 class FirebaseHandler(APIView):
     @classmethod
     def save_to_firebase(cls, department, class_name, topic):
-    @classmethod
-    def save_to_firebase(cls, department, class_name, topic):
         try:
             ref = db.reference('Classes')
             class_name = class_name.replace('/', '\u2215')
             topic.lower()
             updated_topic = ref.child(department).child(class_name).get()
-            updated_topic = updated_topic.lower() if updated_topic else ''
             updated_topic = updated_topic.lower() if updated_topic else ''
             if updated_topic is None:
                 ref.child(department).child(class_name).set(topic)
@@ -341,13 +300,13 @@ class FirebaseHandler(APIView):
                     ref.child(department).child(class_name).set(updated_topic)
                     saved_data = ref.child(department).child(class_name).get()
                     if saved_data == updated_topic:
-                    saved_data = ref.child(department).child(class_name).get()
-                    if saved_data == updated_topic:
-                        return True, 'Topic saved successfully'
+                        saved_data = ref.child(department).child(class_name).get()
+                        if saved_data == updated_topic:
+                            return True, 'Topic saved successfully'
+                        else:
+                            return False, 'Failed to save topic'
                     else:
-                        return False, 'Failed to save topic'
-                else:
-                    return True, 'Topic already in firebase db'
+                        return True, 'Topic already in firebase db'
         except Exception as e:
             return False, str(e)
         
@@ -362,8 +321,7 @@ class FirebaseHandler(APIView):
         if success:
             return JsonResponse({'message': message}, status=201)
         else:
-            return JsonResponse({'message': message}, status=201)
-            return JsonResponse({'message': message}, status=201)
+            return JsonResponse({'message': message}, status=400)
         
     def get(self, class_name):
         try:

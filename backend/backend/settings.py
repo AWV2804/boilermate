@@ -15,7 +15,8 @@ import firebase_admin
 from firebase_admin import credentials
 
 def getPath():
-    return Path(r'C:\Users\andre\Documents\boilermate.json') # subject to change
+    return Path(r'/mnt/c/Users/mli00/Desktop/Purdue/ECE 49595O/Boilermate-b3fcd-firebase-adminsdk-rwh4i-30e3b04f5c.json') # subject to change
+    # return Path(r'C:\Users\andre\Documents\boilermate.json') # subject to change
 
 path = getPath()
 cred = credentials.Certificate(path)
@@ -40,7 +41,7 @@ DEBUG = True
 
 #ALLOWED_HOSTS = ['http://127.0.0.1:8000/', 'http://127.0.0.1:8000/firebase/parse-and-send', 'http://127.0.0.1:8000/firebase/call-api-view', 'http://127.0.0.1:8000/admin/']
 
-ALLOWED_HOSTS = [] # add firebase in here later
+ALLOWED_HOSTS = ["*"] # add firebase in here later
 
 CORS_ORIGIN_WHITELIST = [
     'http://100.64.134.204:19000',
