@@ -1,9 +1,9 @@
 import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
-import Home from './HomeScreen.js'
+import Home from '../HomeScreen.js'
 import { useNavigation } from '@react-navigation/native';
-import { styles } from './GlobalTypes.js'
-import { auth } from '../firebase'
+import { styles } from '../GlobalTypes.js'
+import { auth } from '../../firebase.js'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const SignupScreen = () => {
@@ -11,7 +11,7 @@ const SignupScreen = () => {
     const [password, setPassword] = useState('')
     const [confirmpassword, setConfirmPassword] = useState('')
     const navigation = useNavigation();
-
+    
     const handleSignUp = () => {
         // Check valid email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
