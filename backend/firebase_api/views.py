@@ -133,16 +133,26 @@ class UserHandler(APIView):
         else:
             return JsonResponse({'message': 'Failure'}, status=400)
         
-    def get(self, request, user_ref):
+        
+    def get(self, request):
+        user_ref = request.GET.get('user_ref')
         ref = db.reference('Users')
+        # user_info = ref.child(user_ref).get.key()
+        # user_info = ref.get.key(user_ref)
         user_info = ref.child(user_ref).get()
+        print(user_info)
         if user_info is None:
             return JsonResponse({'message': 'User not found'}, status=404)
         elif user_info:
-            username = user_info.get('username')
-            streaks = user_info.get('streaks')
-            credits = user_info.get('credits')
-            last_login_day = user_info.get('last_login_day')
+            username = user_info.key #username
+            streaks = user_info.child('streaks').get()
+            credits = user_info.child('credits').get()
+            last_login_day = user_info.child('last_login_day').get()
+        # elif user_info:
+        #     username = user_info
+        #     streaks = ref.child(user_ref).child('streaks').get()
+        #     credits = ref.child(user_ref).child('credits').get()
+        #     last_login_day = ref.child(user_ref).child('last_login_day').get()
 
             return JsonResponse({
                 'username': username,
@@ -209,6 +219,7 @@ class YoutubeVideoView(APIView):
         return videos
         
     def post(self, request):
+        print("get into post")
         dept = request.GET.get('department')
         class_name = request.GET.get('class_name')
         topic_id = request.GET.get('topic')

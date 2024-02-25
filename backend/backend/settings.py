@@ -15,7 +15,7 @@ import firebase_admin
 from firebase_admin import credentials
 
 def getPath():
-    return Path(r'/mnt/c/Users/mli00/Desktop/Purdue/ECE 49595O/Boilermate-b3fcd-firebase-adminsdk-rwh4i-30e3b04f5c.json') # subject to change
+    return Path(r'C:\Users\andre\Documents\boilermate.json') # subject to change
 
 path = getPath()
 cred = credentials.Certificate(path)
@@ -42,6 +42,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = [] # add firebase in here later
 
+CORS_ORIGIN_WHITELIST = [
+    'http://100.64.134.204:19000',
+]
 
 # Application definition
 
@@ -60,6 +63,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'corsheaders',
     'django.contrib.staticfiles',
     'django.core.management',
     'rest_framework',
@@ -71,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -93,6 +98,10 @@ TEMPLATES = [
         },
     },
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
