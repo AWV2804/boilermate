@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpacity, Settings } from 'react-native'
-import { auth } from '../firebase';
+import { auth } from '../../firebase';
 import { sendPasswordResetEmail, updatePassword } from 'firebase/auth';
-import { styles } from './GlobalTypes';
+import { styles } from '../GlobalTypes';
 import { useNavigation } from '@react-navigation/native';
 
 const ChangePasswordScreen = () => {

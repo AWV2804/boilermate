@@ -5,9 +5,7 @@ export const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
-        padding: 0,
-        backgroundColor: 'white'
+        alignItems: 'center'
         },
         inputContainer: {   
             width: 300
@@ -59,5 +57,38 @@ export const styles = StyleSheet.create({
             height: 50,
             borderRadius: 10 // Add this line to make the input boxes rounded
         },
+        navigationBar: {
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            backgroundColor: '#f2f2f2',
+            height: 60,
+            width: '100%',
+            position: 'absolute',
+            bottom: 10,
+        },
+        navButton: {
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        dropdownLabel: {
+            fontSize: 18,
+            marginBottom: 10,
+        },
+        dropdown: {
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            backgroundColor: '#f2f2f2',
+            height: 60,
+            width: 200,
+            bottom: 10,
+        },
+        inputSelect: {
+            flex: 1,
+            margin: 2,
+          },
+
+
 })
 
