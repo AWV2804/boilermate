@@ -126,8 +126,6 @@ class UserHandler(APIView):
         elif action == 'watch':
             video_time = int(request.GET.get('video_time'))
             video_id = request.GET.get('video_id')
-            video_time = int(request.GET.get('video_time'))
-            video_id = request.GET.get('video_id')
             self.earn_credits_for_watching_video(username, video_id, video_time)
             return JsonResponse({'message': 'Success'}, status=201)
         else:
