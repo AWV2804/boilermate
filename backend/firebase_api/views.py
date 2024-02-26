@@ -95,7 +95,6 @@ class UserHandler(APIView):
             user_ref = db.reference(f'Users/{username}')
             user_data = user_ref.get()
             video_duration = self.get_video_duration(video_id)
-            video_duration = self.get_video_duration(video_id)
             if video_time >= video_duration / 2:
                 credits_earned = video_time // 60
                 user_ref.update({'credits': user_data.get('credits', 0) + credits_earned})
@@ -106,18 +105,6 @@ class UserHandler(APIView):
             return JsonResponse({'message': str(e)}, status=500)
 
     def post(self, request):
-        username = request.GET.get('username')
-        username = re.sub(r'@.*', '', username)
-        action = request.GET.get('action') #determine in frontend JSON whether or not action is login watch
-        if action == 'create':
-            if db.reference(f'Users/{username}').get() is None:
-                works, errMessage = self.initialize_user(username)
-                if works == False:
-                    return JsonResponse({'message': errMessage},status=400)
-                else:
-                    return JsonResponse({'message': errMessage},status=201)
-            else:
-                return JsonResponse({'message': 'user already registered to firebase domain'},status=200)
         username = request.GET.get('username')
         username = re.sub(r'@.*', '', username)
         action = request.GET.get('action') #determine in frontend JSON whether or not action is login watch
@@ -200,32 +187,7 @@ class YoutubeVideoView(APIView):
                 })
             else:
                 replacements_needed += 1
-        for item in items:
-            video_id = item.get('id', {}).get('videoId')
-            if not video_id:
-                continue
-            
-            video_ref = db.reference(f'Videos/{video_id}')
-            if video_ref.get() is None:
-                video_ref.set(50)
-
-            video_rating = video_ref.get()
-            if video_rating is None or video_rating >= 40:
-                videos.append({
-                    'title': item['snippet']['title'],
-                    'videoId': video_id,
-                    'url': f"https://www.youtube.com/watch?v={video_id}"
-                })
-            else:
-                replacements_needed += 1
-
-        # Replace videos if replacements are needed
-        if replacements_needed > 0:
-            replacement_url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults={replacements_needed}&type=video'
-            replacement_response = requests.get(replacement_url)
-            replacement_data = replacement_response.json()
-            replacement_items = replacement_data.get('items', [])
-        # Replace videos if replacements are needed
+                
         if replacements_needed > 0:
             replacement_url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults={replacements_needed}&type=video'
             replacement_response = requests.get(replacement_url)
@@ -236,7 +198,6 @@ class YoutubeVideoView(APIView):
                 video_id = item.get('id', {}).get('videoId')
                 if not video_id:
                     continue
-
                 videos.append({
                     'title': item['snippet']['title'],
                     'videoId': video_id,
@@ -255,18 +216,6 @@ class YoutubeVideoView(APIView):
             return JsonResponse({'error': 'failed to save to firebase'}, status=500)
         videos = self.scrape_youtube_videos(topic_id, class_name)
         return JsonResponse({'videos': videos},status=201)
-        
-    def post(self, request):
-        dept = request.GET.get('department')
-        class_name = request.GET.get('class_name')
-        topic_id = request.GET.get('topic')
-        class_name = re.sub(r'^.*?-\s*', '', class_name)
-        save_success = FirebaseHandler.save_to_firebase(dept, class_name, topic_id)
-        if save_success == False:
-            return JsonResponse({'error': 'failed to save to firebase'}, status=500)
-        videos = self.scrape_youtube_videos(topic_id, class_name)
-        return JsonResponse({'videos': videos},status=201)
-
 
 class FirebaseHandler(APIView):
     @classmethod
@@ -280,10 +229,6 @@ class FirebaseHandler(APIView):
             if updated_topic is None:
                 ref.child(department).child(class_name).set(topic)
             else:
-                topics_list = [t.strip() for t in updated_topic.split(',')]
-                if topic not in topics_list:
-                    topics_list.append(topic)
-                    updated_topic = ', '.join(topics_list)
                 topics_list = [t.strip() for t in updated_topic.split(',')]
                 if topic not in topics_list:
                     topics_list.append(topic)
@@ -303,9 +248,9 @@ class FirebaseHandler(APIView):
         
             
     def post(self, request):
-        department = request.POST.get('department')
-        class_name = request.POST.get('class_name')
-        topic = request.POST.get('topic')
+        department = request.GET.get('department')
+        class_name = request.GET.get('class_name')
+        topic = request.GET.get('topic')
         
         success, message = self.save_to_firebase(department, class_name, topic)
         
@@ -315,15 +260,12 @@ class FirebaseHandler(APIView):
             return JsonResponse({'message': message}, status=400)
         
     def get(self, class_name):
-        try:
-            ref = db.reference('Classes')
-            data = ref.child(class_name).get()
-            if data:
-                return True, data
-            else:
-                return False, 'Class not found'
-        except Exception as e:
-            return False, str(e)
+        ref = db.reference('Classes')
+        data = ref.child(class_name).get()
+        if data:
+            return JsonResponse({'class data': data}, status=201)
+        else:
+            return JsonResponse({'Error: Class not found'}, status=400)
         
     def fetch_topics(class_name, topic_id):
         ref = db.reference(f'/Classes/{class_name}/{topic_id}')
