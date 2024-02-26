@@ -21,10 +21,6 @@ const HomeScreen = () => {
           </Text>
         </View>
       </TouchableOpacity>
-      <Button icon="camera" mode="contained" onPress={() => UserService.getTopicVideo('ECE', 'Advanced C programming', 'HuffmanTrees')}>
-        VideoAPI Test
-      </Button>
-
     </View>
   );
 };
