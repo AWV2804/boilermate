@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text } from 'react-native';
+import { View, TouchableOpacity, Image, Text, FlatList, Linking } from 'react-native';
 import HomeIcon from 'react-native-vector-icons/AntDesign';
 import SettingsIcon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from '../GlobalTypes.js';
+import userService from '../../user.service.js';
 
 const LearnScreen = () => {
     const navigate = useNavigation();
-    const [videoUrl, setVideoUrl] = useState(null);
+    const [videos, setVideos] = useState([]);
+
+    useEffect(() => {
+        // Assuming getTopicVideo is an imported or defined function that returns a promise
+        userService.getTopicVideo('ECE', 'ece 26400 - advanced C programming', 'Huffman Trees')
+            .then(data => {
+                setVideos(data.videos); // Set the video data to state
+            })
+            .catch(error => {
+                console.error('Error fetching videos', error);
+                // Handle error state as needed
+            });
+    }, []);
 
     const handleHomeNav = () => {
         navigate.navigate('Home');
@@ -17,19 +30,24 @@ const LearnScreen = () => {
         navigate.navigate('Settings');
     };
 
-    const jsonData = {
-        "title": "Huffman coding step-by-step example",
-        "videoId": "iEm1NRyEe5c",
-        "url": "https://www.youtube.com/watch?v=iEm1NRyEe5c"
-    };
-    useEffect(() => {
-        // Set the video URL when the component mounts
-        setVideoUrl(jsonData.url);
-    }, []);
+    const renderItem = ({ item }) => (
+        <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
+            <Text style={{ color: 'blue', textDecorationLine: 'underline', marginVertical: 8 }}>
+                {item.title}
+            </Text>
+        </TouchableOpacity>
+    );
 
     return (
         <View style={styles.container}>
-            <View style={{...styles.navigationBar, borderTopColor: 'gray', borderTopWidth: 0.4 }}>
+            <FlatList
+                data={videos}
+                renderItem={renderItem}
+                keyExtractor={item => item.videoId}
+                // Add some styling if needed
+                contentContainerStyle={{ padding: 20 }}
+            />
+            <View style={{ ...styles.navigationBar, borderTopColor: 'gray', borderTopWidth: 0.4 }}>
                 <TouchableOpacity
                     style={styles.navButton}
                     onPress={handleHomeNav}>
@@ -44,13 +62,8 @@ const LearnScreen = () => {
                     <SettingsIcon name="settings-outline" size={24} color="black" />
                 </TouchableOpacity>
             </View>
-            {videoUrl && (
-                <Text style={{ marginTop: 20, fontSize: 16 }}>
-                    Video URL: {videoUrl}
-                </Text>
-            )}
         </View>
     );
-}
+};
 
 export default LearnScreen;
