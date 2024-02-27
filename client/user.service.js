@@ -52,6 +52,18 @@ class UserService {
     // The actual Axios POST request
     try {
       const response = await axios.post(urlWithParams, {}, { headers });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching YouTube videos:', error);
+      throw error;
+    }
+  }
+  async getUser(username) {
+    const queryParams = new URLSearchParams({ username });
+  
+    const urlWithParams = `${API_URL}handle-user/?${queryParams.toString()}`;
+    try {
+      const response = await axios.get(urlWithParams, {});
       console.log(response)
       return response.data;
     } catch (error) {
@@ -60,58 +72,7 @@ class UserService {
     }
   }
 
-  // async getTopicVideo() {
 
-  //   // Set up the query parameters
-  //   const queryParams = new URLSearchParams({
-  //     department: 'ECE',
-  //     class_name: 'ece 26400 - advanced C programming',
-  //     topic: 'Huffman Trees'
-  //   });
-
-  //   // Combine the base URL with the serialized query parameters
-  //   const urlWithParams = `${API_URL}?${queryParams.toString()}`;
-
-  //   // Set up the headers
-    // const headers = {
-    //   'Accept': '*/*', // This indicates that the client can handle any type of response
-    //   'Content-Type': 'application/json' // Assuming the server expects a JSON payload; adjust if necessary
-    // };
-
-  //   // Set up the Axios POST request with headers
-  //   axios.post(urlWithParams, {}, { headers: headers })
-  //     .then(response => {
-  //       console.log('Data:', response.data);
-  //     })
-  //     .catch(error => {
-  //       console.error('Error:', error);
-  //     });
-  // }
-
-  // async getTopicVideo(department, class_name, topic) {
-
-  //   const queryParams = new URLSearchParams({
-  //     department: department,
-  //     class_name: class_name,
-  //     topic: topic
-  //   });
-
-  //   const urlWithParams = `${API_URL}?${queryParams.toString()}`;
-
-  //   const headers = {
-  //     'Accept': '*/*',
-  //     'Content-Type': 'application/json'
-  //   };
-
-  //   try {
-  //     const response = await axios.post(urlWithParams, {}, { headers: headers })
-  //     console.log(response.data)
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error('Error fetching YouTube videos:', error);
-  //     return null;
-  //   }
-  // }
 }
 
 export default new UserService();
