@@ -17,43 +17,6 @@ import re
 import pytz
 
 # Create your views here.
-class YoutubeAPI:
-    def __init__(self):
-        self.api_key = settings.YOUTUBE_API_KEY
-    
-    def fetch_duration_from_youtube_api(self, video_id):
-        try:
-            youtube = build('youtube', 'v3', developerKey=self.api_key)
-            video_response = youtube.videos().list(
-                part='contentDetails',
-                id=video_id
-            ).execute()
-
-            duration = video_response['items'][0]['contentDetails']['duration']
-            duration_in_seconds = self.parse_duration(duration)
-            return JsonResponse({'duration': duration_in_seconds}, status=200)
-        except Exception as e:
-            return JsonResponse({'message': 'Bad request'}, status=400)
-        
-    def parse_duration(self, duration):
-        hours = 0
-        minutes = 0
-        seconds = 0
-
-        if 'H' in duration:
-            hours = int(duration.split('H')[0][2:])
-            duration = duration.split('H')[1]
-
-        if 'M' in duration:
-            minutes = int(duration.split('M')[0][2:])
-            duration = duration.split('M')[1]
-
-        if 'S' in duration:
-            seconds = int(duration.split('S')[0][2:])
-
-        total_seconds = hours * 3600 + minutes * 60 + seconds
-        return total_seconds
-
 class UserHandler(APIView):
     def initialize_user(self, username):
         try:
@@ -150,59 +113,65 @@ class UserHandler(APIView):
                 'credits': credits,
                 'last_login_day': last_login_day
             })
-    
-    def get_video_duration(video_id):
-        video_duration_seconds = YoutubeAPI.fetch_duration_from_youtube_api(video_id)
-        return video_duration_seconds
 
 class YoutubeVideoView(APIView):
-    def scrape_youtube_videos(self, topic, class_name):
-        api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
-        query = f"A Guide on how to do {topic} in {class_name}"
-        url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=20&type=video'
-        response = requests.get(url)
-        data = response.json()
-        items = data.get('items', [])
-        
-        videos = []
-        replacements_needed = 0
+    @classmethod
+    def scrape_youtube_videos(self, topic, class_name, replacements_needed):
+        try:
+            api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
+            query = f"{topic} in {class_name}"
+            url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults={20+replacements_needed}&type=video'
+            response = requests.get(url)
+            data = response.json()
+            items = data.get('items', [])
+            if replacements_needed > 0:
+                items = items[20:]
 
-        for item in items:
-            video_id = item.get('id', {}).get('videoId')
-            if not video_id:
-                continue
-            
-            video_ref = db.reference(f'Videos/{video_id}')
-            if video_ref.get() is None:
-                video_ref.set(50)
-
-            video_rating = video_ref.get()
-            if video_rating is None or video_rating >= 40:
-                videos.append({
-                    'title': item['snippet']['title'],
-                    'videoId': video_id,
-                    'url': f"https://www.youtube.com/watch?v={video_id}"
-                })
-            else:
-                replacements_needed += 1
-                
-        if replacements_needed > 0:
-            replacement_url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults={replacements_needed}&type=video'
-            replacement_response = requests.get(replacement_url)
-            replacement_data = replacement_response.json()
-            replacement_items = replacement_data.get('items', [])
-
-            for item in replacement_items:
+            for item in items:
                 video_id = item.get('id', {}).get('videoId')
                 if not video_id:
                     continue
-                videos.append({
-                    'title': item['snippet']['title'],
-                    'videoId': video_id,
-                    'url': f"https://www.youtube.com/watch?v={video_id}"
-                })
+                
+                video_ref = db.reference(f'Videos/{topic}/{video_id}')
+                if video_ref.get() is None:
+                    video_ref.set({
+                        'title': item['snippet']['title'],
+                        'rating': 50                    
+                    })
+            return True, "videos scraped successfully"
+        except Exception as e:
+            return False, str(e)
+    
+    @classmethod
+    def fetch_youtube_videos(self, topic, videos_needed, class_name): 
+        try:   
+            video_ref = db.reference(f'Videos/{topic}').get()
+            count = 0
+            videos = list()
+            replacements_needed = 0
+            
+            for video_id in video_ref:
+                if count == videos_needed:
+                    break
+                ref = db.reference(f'Videos/{topic}/{video_id}')
+                if ref.get().get('rating') >= 40:
+                    videos.append({
+                        'title': ref.get().get('title'),
+                        'videoId': video_id,
+                        'url': f"https://www.youtube.com/watch?v={video_id}"
+                    })
+                else:
+                    replacements_needed += 1
+                count += 1
 
-        return videos
+                if replacements_needed > 0:
+                    worked, message = self.scrape_youtube_videos(topic, class_name, replacements_needed)
+                    if worked == False:
+                        return videos, message, False
+
+            return videos, "success", True
+        except Exception as e:
+            return videos, str(e), False
         
     def post(self, request):
         dept = request.GET.get('department')
@@ -212,7 +181,14 @@ class YoutubeVideoView(APIView):
         save_success = FirebaseHandler.save_to_firebase(dept, class_name, topic_id)
         if save_success == False:
             return JsonResponse({'error': 'failed to save to firebase'}, status=500)
-        videos = self.scrape_youtube_videos(topic_id, class_name)
+        ref = db.reference(f'Videos/{topic_id}')
+        if ref.get() is None:
+            worked, message = self.scrape_youtube_videos(topic_id, class_name, 0)
+            if worked == False:
+                return JsonResponse({'Error:': message}, status=400)
+        videos, message, worked = self.fetch_youtube_videos(topic_id, 20, class_name)
+        if worked == False:
+            return JsonResponse({'Error': message},status=500)
         return JsonResponse({'videos': videos},status=201)
 
 class FirebaseHandler(APIView):
@@ -242,13 +218,12 @@ class FirebaseHandler(APIView):
                     else:
                         return True, 'Topic already in firebase db'
         except Exception as e:
-            return False, str(e)
-        
+            return False, str(e)        
             
     def post(self, request):
-        department = request.GET.get('department')
-        class_name = request.GET.get('class_name')
-        topic = request.GET.get('topic')
+        department = request.POST.get('department')
+        class_name = request.POST.get('class_name')
+        topic = request.POST.get('topic')
         
         success, message = self.save_to_firebase(department, class_name, topic)
         
@@ -258,12 +233,15 @@ class FirebaseHandler(APIView):
             return JsonResponse({'message': message}, status=400)
         
     def get(self, class_name):
-        ref = db.reference('Classes')
-        data = ref.child(class_name).get()
-        if data:
-            return JsonResponse({'class data': data}, status=201)
-        else:
-            return JsonResponse({'Error: Class not found'}, status=400)
+        try:
+            ref = db.reference('Classes')
+            data = ref.child(class_name).get()
+            if data:
+                return True, data
+            else:
+                return False, 'Class not found'
+        except Exception as e:
+            return False, str(e)
         
     def fetch_topics(class_name, topic_id):
         ref = db.reference(f'/Classes/{class_name}/{topic_id}')
