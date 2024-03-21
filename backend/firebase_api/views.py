@@ -15,6 +15,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import re
 import pytz
+import random
 
 # Create your views here.
 class UserHandler(APIView):
@@ -120,24 +121,31 @@ class YoutubeVideoView(APIView):
         try:
             api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
             query = f"{topic} in {class_name}"
-            url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults={20+replacements_needed}&type=video'
-            response = requests.get(url)
-            data = response.json()
-            items = data.get('items', [])
-            if replacements_needed > 0:
-                items = items[20:]
+            get_new = replacements_needed
+            while True:
+                if replacements_needed == 0:
+                    url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults={30}&type=video' # 10000 daily queries\
+                else:
+                    url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults={get_new}&type=video&order=random' # 10000 daily queries\
+                response = requests.get(url)
+                data = response.json()
+                items = data.get('items', [])
 
-            for item in items:
-                video_id = item.get('id', {}).get('videoId')
-                if not video_id:
-                    continue
+                for item in items:
+                    video_id = item.get('id', {}).get('videoId')
+                    if not video_id:
+                        continue
+                    
+                    video_ref = db.reference(f'Videos/{topic}/{video_id}')
+                    if video_ref.get() is None:
+                        get_new -= 1
+                        video_ref.set({
+                            'title': item['snippet']['title'],
+                            'rating': 50                    
+                        })
+                if replacements_needed == 0 or get_new == 0:
+                    break
                 
-                video_ref = db.reference(f'Videos/{topic}/{video_id}')
-                if video_ref.get() is None:
-                    video_ref.set({
-                        'title': item['snippet']['title'],
-                        'rating': 50                    
-                    })
             return True, "videos scraped successfully"
         except Exception as e:
             return False, str(e)
@@ -146,28 +154,29 @@ class YoutubeVideoView(APIView):
     def fetch_youtube_videos(self, topic, videos_needed, class_name): 
         try:   
             video_ref = db.reference(f'Videos/{topic}').get()
-            count = 0
-            videos = list()
-            replacements_needed = 0
+            videos = []
+            video_ids = list(video_ref.keys())
+            replacements_needed = videos_needed
             
-            for video_id in video_ref:
-                if count == videos_needed:
-                    break
-                ref = db.reference(f'Videos/{topic}/{video_id}')
+            while len(videos) < videos_needed:
+                random_id = random.choice(video_ids)
+                ref = db.reference(f'Videos/{topic}/{random_id}')
                 if ref.get().get('rating') >= 40:
                     videos.append({
                         'title': ref.get().get('title'),
-                        'videoId': video_id,
-                        'url': f"https://www.youtube.com/watch?v={video_id}"
+                        'videoId': random_id,
+                        'url': f"https://www.youtube.com/watch?v={random_id}"
                     })
                 else:
-                    replacements_needed += 1
-                count += 1
+                    replacements_needed -= 1
 
-                if replacements_needed > 0:
+                if replacements_needed < 0:
+                    replacements_needed = videos_needed - len(videos)
                     worked, message = self.scrape_youtube_videos(topic, class_name, replacements_needed)
-                    if worked == False:
+                    if not worked:
                         return videos, message, False
+                    video_ref = db.reference(f'Videos/{topic}').get()
+                    video_ids = list(video_ref.keys())
 
             return videos, "success", True
         except Exception as e:
