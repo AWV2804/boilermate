@@ -16,6 +16,7 @@ from googleapiclient.errors import HttpError
 import re
 import pytz
 import random
+import urllib.parse
 
 # Create your views here.
 class UserHandler(APIView):
@@ -117,6 +118,30 @@ class UserHandler(APIView):
 
 class YoutubeVideoView(APIView):
     @classmethod
+    def scrape_google_websites(self, topic, class_name, num_results):
+        try:
+            query = f"{topic}"
+            api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
+            cx = 'b73affeb0258a40aa'
+            url = f"https://www.googleapis.com/customsearch/v1?key={api_key}&cx={cx}&q={query}&num={num_results}"
+            response = requests.get(url)
+            data = response.json()
+
+            for item in data.get('items', []):
+                link = item.get('link')
+                title = item.get('title')
+                if link:
+                    link = link.replace("/", "\u2215").replace(".", "\u2219")
+                    ref = db.reference(f'Websites/{topic}/{link}')
+                    ref.set({
+                        'title': title,
+                        'rating': 50
+                    })
+            return True, "success"
+        except Exception as e:
+            return False, str(e)
+    
+    @classmethod
     def scrape_youtube_videos(self, topic, class_name, replacements_needed):
         try:
             api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
@@ -149,6 +174,8 @@ class YoutubeVideoView(APIView):
             video_ids = list(video_ref.keys())
                 
             while len(videos) < videos_needed:
+                if not video_ids:
+                    break
                 random_id = random.choice(video_ids)
                 video_ids.remove(random_id)
                 ref = db.reference(f'Videos/{topic}/{random_id}')
@@ -163,6 +190,30 @@ class YoutubeVideoView(APIView):
         except Exception as e:
             return videos, str(e), False
         
+    @classmethod
+    def fetch_google_websites(self, topic, websites_needed):
+        try:
+            websites = []
+            web_ref = db.reference(f'Websites/{topic}').get()
+            website_urls = list(web_ref.keys())
+            
+            while len(websites) < websites_needed:
+                if not website_urls:
+                    break
+                random_url = random.choice(website_urls)
+                website_urls.remove(random_url)
+                ref = db.reference(f'Websites/{topic}/{random_url}')
+                print(ref.get().get('rating'))
+                if ref.get().get('rating') >= 40:
+                    random_url = random_url.replace("\u2215", "/").replace("\u2219", ".")
+                    websites.append({
+                        'title': ref.get().get('title'),
+                        'website_url': random_url
+                    })
+            return websites, "success", True
+        except Exception as e:
+            return websites, str(e), False
+        
     def post(self, request):
         dept = request.GET.get('department')
         class_name = request.GET.get('class_name')
@@ -176,10 +227,18 @@ class YoutubeVideoView(APIView):
             worked, message = self.scrape_youtube_videos(topic_id, class_name, 1000)
             if worked == False:
                 return JsonResponse({'Error:': message}, status=400)
+        ref = db.reference(f'Websites/{topic_id}')
+        if ref.get() is None:
+            worked, message = self.scrape_google_websites(topic_id, class_name, 10)
+            if worked == False:
+                return JsonResponse({'Error': message}, status=400)
+        websites, message, worked = self.fetch_google_websites(topic_id, 1)
+        if worked == False:
+            return JsonResponse({'Error': message}, status=500)
         videos, message, worked = self.fetch_youtube_videos(topic_id, 20)
         if worked == False:
             return JsonResponse({'Error': message},status=500)
-        return JsonResponse({'videos': videos},status=201)
+        return JsonResponse({'videos': videos, 'websites': websites}, status=201)
 
 class FirebaseHandler(APIView):
     @classmethod

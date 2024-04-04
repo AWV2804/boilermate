@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'django.core.management',
     'rest_framework',
     'firebase_api',
+    'googlesearch',
 ]
 
 MIDDLEWARE = [
