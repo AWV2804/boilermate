@@ -16,7 +16,9 @@ from googleapiclient.errors import HttpError
 import re
 import pytz
 import random
-import urllib.parse
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
+from django_ratelimit.exceptions import Ratelimited
 
 # Create your views here.
 class UserHandler(APIView):
@@ -69,56 +71,63 @@ class UserHandler(APIView):
         except Exception as e:
             return JsonResponse({'message': str(e)}, status=500)
 
+    @method_decorator(ratelimit(key='ip', rate='1/d', block=True), name='USERPOST')
     def post(self, request):
-        username = request.GET.get('username')
-        username = re.sub(r'@.*', '', username)
-        action = request.GET.get('action') #determine in frontend JSON whether or not action is login watch
-        if action == 'create':
-            if db.reference(f'Users/{username}').get() is None:
-                works, errMessage = self.initialize_user(username)
-                if works == False:
-                    return JsonResponse({'message': errMessage},status=400)
+        try:
+            username = request.GET.get('username')
+            username = re.sub(r'@.*', '', username)
+            action = request.GET.get('action') #determine in frontend JSON whether or not action is login watch
+            if action == 'create':
+                if db.reference(f'Users/{username}').get() is None:
+                    works, errMessage = self.initialize_user(username)
+                    if works == False:
+                        return JsonResponse({'message': errMessage},status=400)
+                    else:
+                        return JsonResponse({'message': errMessage},status=201)
                 else:
-                    return JsonResponse({'message': errMessage},status=201)
+                    return JsonResponse({'message': 'user already registered to firebase domain'},status=200)
+            if action == 'login': 
+                boolean, message = self.check_consecutive_login(username)
+                if boolean == False:
+                    return JsonResponse({'message': message}, status=400)
+                else:
+                    return JsonResponse({'message': message}, status=201)
+            elif action == 'watch':
+                video_time = int(request.GET.get('video_time'))
+                video_id = request.GET.get('video_id')
+                self.earn_credits_for_watching_video(username, video_id, video_time)
+                return JsonResponse({'message': 'Success'}, status=201)
             else:
-                return JsonResponse({'message': 'user already registered to firebase domain'},status=200)
-        if action == 'login': 
-            boolean, message = self.check_consecutive_login(username)
-            if boolean == False:
-                return JsonResponse({'message': message}, status=400)
-            else:
-                return JsonResponse({'message': message}, status=201)
-        elif action == 'watch':
-            video_time = int(request.GET.get('video_time'))
-            video_id = request.GET.get('video_id')
-            self.earn_credits_for_watching_video(username, video_id, video_time)
-            return JsonResponse({'message': 'Success'}, status=201)
-        else:
-            return JsonResponse({'message': 'Failure'}, status=400)
-        
+                return JsonResponse({'message': 'Failure'}, status=400)
+        except Ratelimited: #handle only one change for user profile per day
+            return JsonResponse({'Error': 'Rate Limit Exceeded'}, status=429)
+    
+    @method_decorator(ratelimit(key='ip', rate='1/s', method='GET', block=True), name='USERGET')
     def get(self, request):
-        user_ref = request.GET.get('username')
-        user_ref = re.sub(r'@.*', '', user_ref)
-        ref = db.reference('Users')
-        user_info = ref.child(user_ref).get()
-        if user_info is None:
-            return JsonResponse({'message': 'User not found'}, status=404)
-        elif user_info:
-            username = ref.child(user_ref).key #username
-            streaks = user_info.get('streak')
-            credits = user_info.get('credits')
-            last_login_day = user_info.get('last_login')
-
-            return JsonResponse({
-                'username': username,
-                'streaks': streaks,
-                'credits': credits,
-                'last_login_day': last_login_day
-            })
+        try:
+            user_ref = request.GET.get('username')
+            user_ref = re.sub(r'@.*', '', user_ref)
+            ref = db.reference('Users')
+            user_info = ref.child(user_ref).get()
+            if user_info is None:
+                return JsonResponse({'message': 'User not found'}, status=404)
+            elif user_info:
+                username = ref.child(user_ref).key #username
+                streaks = user_info.get('streak')
+                credits = user_info.get('credits')
+                last_login_day = user_info.get('last_login')
+                return JsonResponse({
+                    'username': username,
+                    'streaks': streaks,
+                    'credits': credits,
+                    'last_login_day': last_login_day
+                })
+        except Ratelimited:
+            return JsonResponse({'Error': 'Rate limit Exceeded'}, status=429)
 
 class YoutubeVideoView(APIView):
     @classmethod
-    def scrape_google_websites(self, topic, class_name, num_results):
+    def scrape_google_websites(self, topic, num_results):
         try:
             query = f"{topic}"
             api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
@@ -203,7 +212,6 @@ class YoutubeVideoView(APIView):
                 random_url = random.choice(website_urls)
                 website_urls.remove(random_url)
                 ref = db.reference(f'Websites/{topic}/{random_url}')
-                print(ref.get().get('rating'))
                 if ref.get().get('rating') >= 40:
                     random_url = random_url.replace("\u2215", "/").replace("\u2219", ".")
                     websites.append({
@@ -213,32 +221,36 @@ class YoutubeVideoView(APIView):
             return websites, "success", True
         except Exception as e:
             return websites, str(e), False
-        
+    
+    @method_decorator(ratelimit(key='ip', rate='10/m', method='POST', block=True), name='SCRAPEPOST')
     def post(self, request):
-        dept = request.GET.get('department')
-        class_name = request.GET.get('class_name')
-        topic_id = request.GET.get('topic')
-        class_name = re.sub(r'^.*?-\s*', '', class_name)
-        save_success = FirebaseHandler.save_to_firebase(dept, class_name, topic_id)
-        if save_success == False:
-            return JsonResponse({'error': 'failed to save to firebase'}, status=500)
-        ref = db.reference(f'Videos/{topic_id}')
-        if ref.get() is None:
-            worked, message = self.scrape_youtube_videos(topic_id, class_name, 1000)
+        try:
+            dept = request.GET.get('department')
+            class_name = request.GET.get('class_name')
+            topic_id = request.GET.get('topic')
+            class_name = re.sub(r'^.*?-\s*', '', class_name)
+            save_success = FirebaseHandler.save_to_firebase(dept, class_name, topic_id)
+            if save_success == False:
+                return JsonResponse({'error': 'failed to save to firebase'}, status=500)
+            ref = db.reference(f'Videos/{topic_id}')
+            if ref.get() is None:
+                worked, message = self.scrape_youtube_videos(topic_id, class_name, 1000)
+                if worked == False:
+                    return JsonResponse({'Error:': message}, status=400)
+            ref = db.reference(f'Websites/{topic_id}')
+            if ref.get() is None:
+                worked, message = self.scrape_google_websites(topic_id, 10)
+                if worked == False:
+                    return JsonResponse({'Error': message}, status=400)
+            websites, message, worked = self.fetch_google_websites(topic_id, 5)
             if worked == False:
-                return JsonResponse({'Error:': message}, status=400)
-        ref = db.reference(f'Websites/{topic_id}')
-        if ref.get() is None:
-            worked, message = self.scrape_google_websites(topic_id, class_name, 10)
+                return JsonResponse({'Error': message}, status=500)
+            videos, message, worked = self.fetch_youtube_videos(topic_id, 20)
             if worked == False:
-                return JsonResponse({'Error': message}, status=400)
-        websites, message, worked = self.fetch_google_websites(topic_id, 1)
-        if worked == False:
-            return JsonResponse({'Error': message}, status=500)
-        videos, message, worked = self.fetch_youtube_videos(topic_id, 20)
-        if worked == False:
-            return JsonResponse({'Error': message},status=500)
-        return JsonResponse({'videos': videos, 'websites': websites}, status=201)
+                return JsonResponse({'Error': message},status=500)
+            return JsonResponse({'videos': videos, 'websites': websites}, status=201)
+        except Ratelimited:
+            return JsonResponse({'Error': 'Rate limit exceeded'}, status=429)
 
 class FirebaseHandler(APIView):
     @classmethod
@@ -246,7 +258,7 @@ class FirebaseHandler(APIView):
         try:
             ref = db.reference('Classes')
             class_name = class_name.replace('/', '\u2215')
-            topic.lower()
+            topic = topic.lower()
             updated_topic = ref.child(department).child(class_name).get()
             updated_topic = updated_topic.lower() if updated_topic else ''
             if updated_topic is None:
@@ -268,29 +280,33 @@ class FirebaseHandler(APIView):
                         return True, 'Topic already in firebase db'
         except Exception as e:
             return False, str(e)        
-            
+    @method_decorator(ratelimit(key='ip', rate='10/m', block=True), name= 'FIREPOST') 
     def post(self, request):
-        department = request.POST.get('department')
-        class_name = request.POST.get('class_name')
-        topic = request.POST.get('topic')
+        try:
+            department = request.POST.get('department')
+            class_name = request.POST.get('class_name')
+            topic = request.POST.get('topic')
+            
+            success, message = self.save_to_firebase(department, class_name, topic)
+            
+            if success:
+                return JsonResponse({'message': message}, status=201)
+            else:
+                return JsonResponse({'message': message}, status=400)
+        except Ratelimited:
+            return JsonResponse({'Error': 'Rate limit exceeded'}, status=429)
         
-        success, message = self.save_to_firebase(department, class_name, topic)
-        
-        if success:
-            return JsonResponse({'message': message}, status=201)
-        else:
-            return JsonResponse({'message': message}, status=400)
-        
+    # @ratelimit(key='ip', rate='10/m', block=True)
     def get(self, class_name):
         try:
             ref = db.reference('Classes')
             data = ref.child(class_name).get()
             if data:
-                return True, data
+                return JsonResponse({'Data': data}, status=200)
             else:
-                return False, 'Class not found'
-        except Exception as e:
-            return False, str(e)
+                return JsonResponse({'Error': 'Class not found'}, status=400)
+        except Ratelimited:
+            return JsonResponse({'Error': 'Rate Limit Exceeded'}, status=429)
         
     def fetch_topics(class_name, topic_id):
         ref = db.reference(f'/Classes/{class_name}/{topic_id}')
