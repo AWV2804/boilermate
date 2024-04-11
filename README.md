@@ -29,11 +29,11 @@ Contributions are welcome! If you'd like to contribute to BoilerMate, please fol
 - Make your changes and ensure all tests pass.
 - Submit a pull request detailing your changes.
 
+Contributions and derivative work are encouraged to be open-source to benefit the community.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-Contributions and derivative work are licensed under the GNU General Public License (GPL-3.0) - see the [CONTRIBUTIONS](CONTRIBUTIONS) file for details.
+This project is licensed under the MIT License - see the [LICENSE](docs/LICENSE.md) file for details.
 
 ## Acknowledgements
 
