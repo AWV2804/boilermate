@@ -1,6 +1,6 @@
 # Boilermate - A Purdue Academic Companion
 
-BoilerMate is an educational app designed to bridge the gap between theoretical content and its practical application in advanced courses at Purdue University. It offers personalized features tailored to Purdue students, aiming to enhance their learning experience and academic success.
+Boilermate is an educational app designed to bridge the gap between theoretical content and its practical application in advanced courses at Purdue University. It offers personalized features tailored to Purdue students, aiming to enhance their learning experience and academic success.
 
 ## Features
 
@@ -11,7 +11,7 @@ BoilerMate is an educational app designed to bridge the gap between theoretical 
 
 ## Getting Started
 
-To get started with BoilerMate, follow these steps:
+To get started with Boilermate, follow these steps:
 
 1. Clone the repository to your local machine.
 2. Install dependencies using `npm install`.
@@ -22,7 +22,7 @@ For more information on the app, please find the User Docs.
 
 ## Contributing
 
-Contributions are welcome! If you'd like to contribute to BoilerMate, please follow these guidelines:
+Contributions are welcome! If you'd like to contribute to Boilermate, please follow these guidelines:
 
 - Fork the repository.
 - Create a new branch for your feature or bug fix.
