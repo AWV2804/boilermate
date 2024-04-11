@@ -1,4 +1,4 @@
-# BoilerMate - A Purdue Academic Companion
+# Boilermate - A Purdue Academic Companion
 
 BoilerMate is an educational app designed to bridge the gap between theoretical content and its practical application in advanced courses at Purdue University. It offers personalized features tailored to Purdue students, aiming to enhance their learning experience and academic success.
 
