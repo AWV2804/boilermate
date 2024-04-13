@@ -15,45 +15,12 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import re
 import pytz
+import random
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
+from django_ratelimit.exceptions import Ratelimited
 
 # Create your views here.
-class YoutubeAPI:
-    def __init__(self):
-        self.api_key = settings.YOUTUBE_API_KEY
-    
-    def fetch_duration_from_youtube_api(self, video_id):
-        try:
-            youtube = build('youtube', 'v3', developerKey=self.api_key)
-            video_response = youtube.videos().list(
-                part='contentDetails',
-                id=video_id
-            ).execute()
-
-            duration = video_response['items'][0]['contentDetails']['duration']
-            duration_in_seconds = self.parse_duration(duration)
-            return JsonResponse({'duration': duration_in_seconds}, status=200)
-        except Exception as e:
-            return JsonResponse({'message': 'Bad request'}, status=400)
-        
-    def parse_duration(self, duration):
-        hours = 0
-        minutes = 0
-        seconds = 0
-
-        if 'H' in duration:
-            hours = int(duration.split('H')[0][2:])
-            duration = duration.split('H')[1]
-
-        if 'M' in duration:
-            minutes = int(duration.split('M')[0][2:])
-            duration = duration.split('M')[1]
-
-        if 'S' in duration:
-            seconds = int(duration.split('S')[0][2:])
-
-        total_seconds = hours * 3600 + minutes * 60 + seconds
-        return total_seconds
-
 class UserHandler(APIView):
     def initialize_user(self, username):
         try:
@@ -104,116 +71,186 @@ class UserHandler(APIView):
         except Exception as e:
             return JsonResponse({'message': str(e)}, status=500)
 
+    @method_decorator(ratelimit(key='ip', rate='1/d', block=True), name='USERPOST')
     def post(self, request):
-        username = request.GET.get('username')
-        username = re.sub(r'@.*', '', username)
-        action = request.GET.get('action') #determine in frontend JSON whether or not action is login watch
-        if action == 'create':
-            if db.reference(f'Users/{username}').get() is None:
-                works, errMessage = self.initialize_user(username)
-                if works == False:
-                    return JsonResponse({'message': errMessage},status=400)
+        try:
+            username = request.GET.get('username')
+            username = re.sub(r'@.*', '', username)
+            action = request.GET.get('action') #determine in frontend JSON whether or not action is login watch
+            if action == 'create':
+                if db.reference(f'Users/{username}').get() is None:
+                    works, errMessage = self.initialize_user(username)
+                    if works == False:
+                        return JsonResponse({'message': errMessage},status=400)
+                    else:
+                        return JsonResponse({'message': errMessage},status=201)
                 else:
-                    return JsonResponse({'message': errMessage},status=201)
+                    return JsonResponse({'message': 'user already registered to firebase domain'},status=200)
+            if action == 'login': 
+                boolean, message = self.check_consecutive_login(username)
+                if boolean == False:
+                    return JsonResponse({'message': message}, status=400)
+                else:
+                    return JsonResponse({'message': message}, status=201)
+            elif action == 'watch':
+                video_time = int(request.GET.get('video_time'))
+                video_id = request.GET.get('video_id')
+                self.earn_credits_for_watching_video(username, video_id, video_time)
+                return JsonResponse({'message': 'Success'}, status=201)
             else:
-                return JsonResponse({'message': 'user already registered to firebase domain'},status=200)
-        if action == 'login': 
-            boolean, message = self.check_consecutive_login(username)
-            if boolean == False:
-                return JsonResponse({'message': message}, status=400)
-            else:
-                return JsonResponse({'message': message}, status=201)
-        elif action == 'watch':
-            video_time = int(request.GET.get('video_time'))
-            video_id = request.GET.get('video_id')
-            self.earn_credits_for_watching_video(username, video_id, video_time)
-            return JsonResponse({'message': 'Success'}, status=201)
-        else:
-            return JsonResponse({'message': 'Failure'}, status=400)
-        
-    def get(self, request):
-        user_ref = request.GET.get('username')
-        user_ref = re.sub(r'@.*', '', user_ref)
-        ref = db.reference('Users')
-        user_info = ref.child(user_ref).get()
-        if user_info is None:
-            return JsonResponse({'message': 'User not found'}, status=404)
-        elif user_info:
-            username = ref.child(user_ref).key #username
-            streaks = user_info.get('streak')
-            credits = user_info.get('credits')
-            last_login_day = user_info.get('last_login')
-
-            return JsonResponse({
-                'username': username,
-                'streaks': streaks,
-                'credits': credits,
-                'last_login_day': last_login_day
-            })
+                return JsonResponse({'message': 'Failure'}, status=400)
+        except Ratelimited: #handle only one change for user profile per day
+            return JsonResponse({'Error': 'Rate Limit Exceeded'}, status=429)
     
-    def get_video_duration(video_id):
-        video_duration_seconds = YoutubeAPI.fetch_duration_from_youtube_api(video_id)
-        return video_duration_seconds
+    @method_decorator(ratelimit(key='ip', rate='1/s', method='GET', block=True), name='USERGET')
+    def get(self, request):
+        try:
+            user_ref = request.GET.get('username')
+            user_ref = re.sub(r'@.*', '', user_ref)
+            ref = db.reference('Users')
+            user_info = ref.child(user_ref).get()
+            if user_info is None:
+                return JsonResponse({'message': 'User not found'}, status=404)
+            elif user_info:
+                username = ref.child(user_ref).key #username
+                streaks = user_info.get('streak')
+                credits = user_info.get('credits')
+                last_login_day = user_info.get('last_login')
+                return JsonResponse({
+                    'username': username,
+                    'streaks': streaks,
+                    'credits': credits,
+                    'last_login_day': last_login_day
+                })
+        except Ratelimited:
+            return JsonResponse({'Error': 'Rate limit Exceeded'}, status=429)
 
 class YoutubeVideoView(APIView):
-    def scrape_youtube_videos(self, topic, class_name):
-        api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
-        query = f"A Guide on how to do {topic} in {class_name}"
-        url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults=20&type=video'
-        response = requests.get(url)
-        data = response.json()
-        items = data.get('items', [])
-        
-        videos = []
-        replacements_needed = 0
+    @classmethod
+    def scrape_google_websites(self, topic, num_results):
+        try:
+            query = f"{topic}"
+            api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
+            cx = 'b73affeb0258a40aa'
+            url = f"https://www.googleapis.com/customsearch/v1?key={api_key}&cx={cx}&q={query}&num={num_results}"
+            response = requests.get(url)
+            data = response.json()
 
-        for item in items:
-            video_id = item.get('id', {}).get('videoId')
-            if not video_id:
-                continue
-            
-            video_ref = db.reference(f'Videos/{video_id}')
-            if video_ref.get() is None:
-                video_ref.set(50)
+            for item in data.get('items', []):
+                link = item.get('link')
+                title = item.get('title')
+                if link:
+                    link = link.replace("/", "\u2215").replace(".", "\u2219")
+                    ref = db.reference(f'Websites/{topic}/{link}')
+                    ref.set({
+                        'title': title,
+                        'rating': 50
+                    })
+            return True, "success"
+        except Exception as e:
+            return False, str(e)
+    
+    @classmethod
+    def scrape_youtube_videos(self, topic, class_name, replacements_needed):
+        try:
+            api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
+            query = f"{topic} in {class_name}"
+            url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults={replacements_needed}&type=video' # 10000 daily queries
+            response = requests.get(url)                    
+            data = response.json()
+            items = data.get('items', [])
 
-            video_rating = video_ref.get()
-            if video_rating is None or video_rating >= 40:
-                videos.append({
-                    'title': item['snippet']['title'],
-                    'videoId': video_id,
-                    'url': f"https://www.youtube.com/watch?v={video_id}"
-                })
-            else:
-                replacements_needed += 1
-                
-        if replacements_needed > 0:
-            replacement_url = f'https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&maxResults={replacements_needed}&type=video'
-            replacement_response = requests.get(replacement_url)
-            replacement_data = replacement_response.json()
-            replacement_items = replacement_data.get('items', [])
-
-            for item in replacement_items:
+            for item in items:
                 video_id = item.get('id', {}).get('videoId')
                 if not video_id:
                     continue
-                videos.append({
-                    'title': item['snippet']['title'],
-                    'videoId': video_id,
-                    'url': f"https://www.youtube.com/watch?v={video_id}"
-                })
+                video_ref = db.reference(f'Videos/{topic}/{video_id}')
+                if video_ref.get() is None:
+                    video_ref.set({
+                        'title': item['snippet']['title'],
+                        'rating': 50
+                    })
+                
+            return True, "videos scraped successfully"
+        except Exception as e:
+            return False, str(e)
+    
+    @classmethod
+    def fetch_youtube_videos(self, topic, videos_needed): 
+        try:   
+            video_ref = db.reference(f'Videos/{topic}').get()
+            videos = []
+            video_ids = list(video_ref.keys())
+                
+            while len(videos) < videos_needed:
+                if not video_ids:
+                    break
+                random_id = random.choice(video_ids)
+                video_ids.remove(random_id)
+                ref = db.reference(f'Videos/{topic}/{random_id}')
+                if ref.get().get('rating') >= 40:
+                    videos.append({
+                        'title': ref.get().get('title'),
+                        'videoId': random_id,
+                        'url': f"https://www.youtube.com/watch?v={random_id}"
+                    })
 
-        return videos
+            return videos, "success", True
+        except Exception as e:
+            return videos, str(e), False
         
+    @classmethod
+    def fetch_google_websites(self, topic, websites_needed):
+        try:
+            websites = []
+            web_ref = db.reference(f'Websites/{topic}').get()
+            website_urls = list(web_ref.keys())
+            
+            while len(websites) < websites_needed:
+                if not website_urls:
+                    break
+                random_url = random.choice(website_urls)
+                website_urls.remove(random_url)
+                ref = db.reference(f'Websites/{topic}/{random_url}')
+                if ref.get().get('rating') >= 40:
+                    random_url = random_url.replace("\u2215", "/").replace("\u2219", ".")
+                    websites.append({
+                        'title': ref.get().get('title'),
+                        'website_url': random_url
+                    })
+            return websites, "success", True
+        except Exception as e:
+            return websites, str(e), False
+    
+    @method_decorator(ratelimit(key='ip', rate='10/m', method='POST', block=True), name='SCRAPEPOST')
     def post(self, request):
-        dept = request.GET.get('department')
-        class_name = request.GET.get('class_name')
-        topic_id = request.GET.get('topic')
-        class_name = re.sub(r'^.*?-\s*', '', class_name)
-        save_success = FirebaseHandler.save_to_firebase(dept, class_name, topic_id)
-        if save_success == False:
-            return JsonResponse({'error': 'failed to save to firebase'}, status=500)
-        videos = self.scrape_youtube_videos(topic_id, class_name)
-        return JsonResponse({'videos': videos},status=201)
+        try:
+            dept = request.GET.get('department')
+            class_name = request.GET.get('class_name')
+            topic_id = request.GET.get('topic')
+            class_name = re.sub(r'^.*?-\s*', '', class_name)
+            save_success = FirebaseHandler.save_to_firebase(dept, class_name, topic_id)
+            if save_success == False:
+                return JsonResponse({'error': 'failed to save to firebase'}, status=500)
+            ref = db.reference(f'Videos/{topic_id}')
+            if ref.get() is None:
+                worked, message = self.scrape_youtube_videos(topic_id, class_name, 1000)
+                if worked == False:
+                    return JsonResponse({'Error:': message}, status=400)
+            ref = db.reference(f'Websites/{topic_id}')
+            if ref.get() is None:
+                worked, message = self.scrape_google_websites(topic_id, 10)
+                if worked == False:
+                    return JsonResponse({'Error': message}, status=400)
+            websites, message, worked = self.fetch_google_websites(topic_id, 5)
+            if worked == False:
+                return JsonResponse({'Error': message}, status=500)
+            videos, message, worked = self.fetch_youtube_videos(topic_id, 20)
+            if worked == False:
+                return JsonResponse({'Error': message},status=500)
+            return JsonResponse({'videos': videos, 'websites': websites}, status=201)
+        except Ratelimited:
+            return JsonResponse({'Error': 'Rate limit exceeded'}, status=429)
 
 class FirebaseHandler(APIView):
     @classmethod
@@ -221,7 +258,7 @@ class FirebaseHandler(APIView):
         try:
             ref = db.reference('Classes')
             class_name = class_name.replace('/', '\u2215')
-            topic.lower()
+            topic = topic.lower()
             updated_topic = ref.child(department).child(class_name).get()
             updated_topic = updated_topic.lower() if updated_topic else ''
             if updated_topic is None:
@@ -242,28 +279,34 @@ class FirebaseHandler(APIView):
                     else:
                         return True, 'Topic already in firebase db'
         except Exception as e:
-            return False, str(e)
-        
-            
+            return False, str(e)        
+    @method_decorator(ratelimit(key='ip', rate='10/m', block=True), name= 'FIREPOST') 
     def post(self, request):
-        department = request.GET.get('department')
-        class_name = request.GET.get('class_name')
-        topic = request.GET.get('topic')
+        try:
+            department = request.POST.get('department')
+            class_name = request.POST.get('class_name')
+            topic = request.POST.get('topic')
+            
+            success, message = self.save_to_firebase(department, class_name, topic)
+            
+            if success:
+                return JsonResponse({'message': message}, status=201)
+            else:
+                return JsonResponse({'message': message}, status=400)
+        except Ratelimited:
+            return JsonResponse({'Error': 'Rate limit exceeded'}, status=429)
         
-        success, message = self.save_to_firebase(department, class_name, topic)
-        
-        if success:
-            return JsonResponse({'message': message}, status=201)
-        else:
-            return JsonResponse({'message': message}, status=400)
-        
+    # @ratelimit(key='ip', rate='10/m', block=True)
     def get(self, class_name):
-        ref = db.reference('Classes')
-        data = ref.child(class_name).get()
-        if data:
-            return JsonResponse({'class data': data}, status=201)
-        else:
-            return JsonResponse({'Error: Class not found'}, status=400)
+        try:
+            ref = db.reference('Classes')
+            data = ref.child(class_name).get()
+            if data:
+                return JsonResponse({'Data': data}, status=200)
+            else:
+                return JsonResponse({'Error': 'Class not found'}, status=400)
+        except Ratelimited:
+            return JsonResponse({'Error': 'Rate Limit Exceeded'}, status=429)
         
     def fetch_topics(class_name, topic_id):
         ref = db.reference(f'/Classes/{class_name}/{topic_id}')
