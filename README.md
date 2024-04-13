@@ -14,12 +14,13 @@ Boilermate is an educational app designed to bridge the gap between theoretical 
 To get started with Boilermate, follow these steps:
 
 1. Clone the repository to your local machine.
-2. Install dependencies using `npm install`.
+2. Install dependencies for the frontend using `npm install`.
 3. Cd to the `client` folder.
 4. Start the development server using `npm start`.
 5. Cd to the `backend` folder.
-6. Start the middleman API using `python3 manage.py runserver`.
-7. Explore the app and its features!
+6. Install dependencies for the backend using `pip install requirements.txt`
+7. Start the middleman API using `python3 manage.py runserver`.
+8. Explore the app and its features!
 
 For more information on the app, please find the User Docs.
 
