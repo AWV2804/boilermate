@@ -9,16 +9,18 @@ import userService from '../../user.service.js';
 const LearnScreen = () => {
     const navigate = useNavigation();
     const [videos, setVideos] = useState([]);
+    const [websites, setWebsites] = useState([]);
 
     useEffect(() => {
         // Assuming getTopicVideo is an imported or defined function that returns a promise
+        //CURRENTLY HARDCODED
         userService.getTopicVideo('ECE', 'ece 26400 - advanced C programming', 'Huffman Trees')
             .then(data => {
-                setVideos(data.videos); // Set the video data to state
+                setVideos(data.videos);
+                setWebsites(data.websites);
             })
             .catch(error => {
                 console.error('Error fetching videos', error);
-                // Handle error state as needed
             });
     }, []);
 
@@ -44,7 +46,6 @@ const LearnScreen = () => {
                 data={videos}
                 renderItem={renderItem}
                 keyExtractor={item => item.videoId}
-                // Add some styling if needed
                 contentContainerStyle={{ padding: 20 }}
             />
             <View style={{ ...styles.navigationBar, borderTopColor: 'gray', borderTopWidth: 0.4 }}>

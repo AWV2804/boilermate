@@ -12,12 +12,16 @@ const ClassSelectScreen = () => {
 
     const [openClass, setOpenClass] = useState(false);
     const [valueClass, setValueClass] = useState(null);
+
+    //CURRENTLY HARDCODED
     const [classes, selectClass] = useState([
         { label: 'ECE 264', value: 'ECE 264' }
     ]);
 
     const [openTopic, setOpenTopic] = useState(false);
     const [valueTopic, setValueTopic] = useState(null);
+
+    //CURRENTLY HARDCODED
     const [topic, selectTopic] = useState([
         { label: 'Huffman Tree', value: 'HUF' }
     ]);
@@ -26,6 +30,7 @@ const ClassSelectScreen = () => {
     const [credits, setCredits] = useState(0);
 
     useEffect(() => {
+        //CURRENTLY HARDCODED
         userService.getUser('andrewtu517@gmail.com')
         .then(data => {
             setStreaks(data.streaks);

@@ -42,7 +42,7 @@ class UserService {
   
     const queryParams = new URLSearchParams({ department, class_name, topic });
   
-    const urlWithParams = `${API_URL}scrape-youtube-videos/?${queryParams.toString()}`;
+    const urlWithParams = `${API_URL}scrape-website-data/?${queryParams.toString()}`;
   
     const headers = {
       'Accept': '*/*', // This indicates that the client can handle any type of response
