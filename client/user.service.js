@@ -5,38 +5,6 @@ API_URL = "http://100.64.134.204:8000/firebase_api/";
 
 class UserService {
 
-  // async getTopicVideo() {
-  //   console.log("got into function")
-  //   const url = 'http://100.64.134.204:8000/firebase_api/scrape-youtube-videos/';
-  //   // const url = 'http://127.0.0.1:8000/firebase_api/scrape-youtube-videos/';
-  //   console.log(url)
-
-  //   const data = {
-  //     department: 'ECE',
-  //     class_name: 'C',
-  //     topic: 'HuffmanTrees'
-  //   };
-
-  //   try {
-  //     const response = await axios.post(url);
-  //     console.log(response.data)
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error('Error fetching YouTube videos:', error);
-  //     return null;
-  //   }
-
-  //   // const res = await axios.post(url);
-  //   // // const res = await axios.post(`${API_URL}scrape-youtube-videos/`);
-  //   // console.log("got into function3")
-  //   // if (res.status != 201){
-  //   //   console.error("we weren't able to get the topic videos")
-  //   //   return
-  //   // }
-  //   // console.log(res.data)
-  //   // return res.data
-  // }
-
   async getTopicVideo(department, class_name, topic) {
     // const baseUrl = 'http://100.64.134.204:8000/firebase_api/scrape-youtube-videos/';
   
@@ -71,7 +39,21 @@ class UserService {
       throw error;
     }
   }
-
+  
+  async askQuestion(question) {
+    const url = `${API_URL}chat/`; // Endpoint for ChatGPT API
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+  
+    try {
+      const response = await axios.post(url, { question }, { headers });
+      return response.data;
+    } catch (error) {
+      console.error('Error asking question:', error);
+      throw error;
+    }
+  }
 
 }
 

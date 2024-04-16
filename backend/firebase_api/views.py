@@ -16,6 +16,8 @@ from googleapiclient.errors import HttpError
 import re
 import pytz
 import random
+import openai
+from openai import OpenAI
 from django.utils.decorators import method_decorator
 from django_ratelimit.decorators import ratelimit
 from django_ratelimit.exceptions import Ratelimited
@@ -316,4 +318,24 @@ class FirebaseHandler(APIView):
         ref = db.reference('Classes')
         class_key = ref.child(department).child(class_name).key
         return class_key
-    
+
+openai_client = OpenAI(api_key=settings.OPENAI_API_KEY)
+
+class ChatGPTView(APIView):
+    def post(self, request, *args, **kwargs):
+        user_input = request.data.get('question', '')  # Using 'question' as the key for user input
+        system_message = "You are a helpful assistant helping students answer academic questions."
+
+        try:
+            response = openai_client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": system_message},
+                    {"role": "user", "content": user_input}
+                ]
+            )
+            
+            answer = response.choices[0].message.content.strip()
+            return JsonResponse({'answer': answer}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)

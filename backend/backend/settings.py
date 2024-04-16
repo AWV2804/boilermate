@@ -109,6 +109,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 YOUTUBE_API_KEY = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
 
+OPENAI_API_KEY = 'sk-proj-GbBBhDQutQQcZtbn1SCRT3BlbkFJmZf2WyNOXxzcpJ4D6Mif'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
