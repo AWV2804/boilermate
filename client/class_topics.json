@@ -1,6 +1,5 @@
 {
     "\nECE 19595 - Selected Topics in Electrical and Computer Engineering\n": [
-        "Topics",
         "",
         "",
         "",
@@ -18,43 +17,74 @@
         ""
     ],
     "\nECE 20001 - Electrical Engineering Fundamentals I\n": [
-        "Lecture Topics",
-        "Basic concepts: general circuit elements, charge, current, voltage; Power, independent and dependent sources; Source connections; resistance and Ohm's law, Kirchhoff's Laws",
-        "Resistor combinations; voltage/current division; Kirchhoff's Current Law (KCL) and Nodal Analysis; Kirchhoff's Current Law (KVL) and Mesh Analysis",
+        "Basic concepts: general circuit elements, charge, current, voltage;",
+        "Power, independent and dependent sources",
+        "Source connections",
+        "Resistance and Ohm's law, Kirchhoff's Laws",
+        "Resistor combination;",
+        "voltage/current division;",
+        "Kirchhoff's Current Law (KCL) and Nodal Analysis",
+        "Kirchhoff's Current Law (KVL) and Mesh Analysis",
         "Dependent sources and equivalent resistance concept",
-        "Linearity and superposition; Thevenin's and Norton's theorems and source transformations",
-        "Thevenin's and Norton's theorems; Capacitance and capacitors; Inductance and inductors; Inductor/Capacitor combinations",
-        "First-order circuits: zero input response; First-order circuits: step response; Linearity/Response classification & waveform generation",
-        "First-order circuits: applications; AC circuits: complex forcing function",
-        "Phasors: Ohm's phasor law, KVL & KCL; Impedance/admittance of 2-terminal devices",
-        "Sinusoidal steady-state (SSS) analysis; Frequency response; Instantaneous, average power and effective value",
-        "Power Transfer; SSS additional examples and applications; Magnetically coupled circuits",
-        "Magnetically coupled circuits; Introduction to semiconductors",
+        "Linearity and superposition",
+        "Thevenin's and Norton's theorems and source transformations",
+        "Thevenin's and Norton's theorems",
+        "Capacitance and capacitors",
+        "Inductance and inductors",
+        "Inductor/Capacitor combinations",
+        "First-order circuits: zero input response",
+        "First-order circuits: step response",
+        "Linearity/Response classification & waveform generation",
+        "First-order circuits: applications",
+        "AC circuits: complex forcing function",
+        "Phasors: Ohm's phasor law, KVL & KCL",
+        "Impedance/admittance of 2-terminal devices",
+        "Sinusoidal steady-state (SSS) analysis",
+        "Frequency response",
+        "Instantaneous, average power and effective value",
+        "Power Transfer; SSS additional examples and applications",
+        "Magnetically coupled circuits",
+        "Introduction to semiconductors",
         "Carriers in intrinsic semiconductors; Carriers in doped semiconductors; Energy bonding model",
-        "pn junction I; pn junction II; Diode circuits and applications I",
+        "Diode circuits and applications I",
         "Diode circuits and applications II",
-        "MOSFET transistor structure and operation; MOSFET amplifiers I; MOSFET amplifiers II",
-        "Transistors applications I; Transistors applications II"
+        "MOSFET transistor structure and operation",
+        "Transistors applications I",
+        "Transistors applications II"
     ],
     "\nECE 20002 - Electrical Engineering Fundamentals II\n": [
-        "Topic",
-        "OpAmps - operation (gain, input/output resistance, common-mode); Field-Effect Transistor devices; DC review; Current mirror example; FET small signal models; Active loads",
-        "Common Source amplifier (mid-frequency behavior); Common Drain and Common Gate amplifiers (mid-frequency behavior); Single-stage amplifier time constants for low-/high-freq response\r\n",
-        "OpAmp model using FETs; ODE models for circuits and the solutions thereof; RC circuits with and without initial conditions\r\n",
-        "RL circuits with and without initial conditions; LC circuits with and without initial conditions; RLC circuits with and without initial conditions\r\n",
-        "Modeling of switching in circuits using initial conditions; Impulse response, h(t), from the step response; Circuit modeling using h(t); Intro to convolution\r\n",
-        "Convolution integral and properties; Convolution examples; Graphical interpretation; Convolution algebra; Convolution examples\r\n",
-        "Laplace Transform definition and basic pairs; More basic Laplace Transform pairs; Duality with time-domain; Properties of the Laplace Transform\r\n",
-        "Inverse Laplace Transform via partial fraction expansion; Impedance; Admittance; LT solution of ODEs for \"at rest\" circuits; Incorporation of initial conditions in LT analysis\r\n",
-        "Transfer function, H(s); System analysis in frequency and time domains; Response decomposition, steady-state analysis\r\n",
-        "Complex plane concepts, pole/zero plots, stability; Frequency response; Frequency and magnitude scaling\r\n",
-        "Resonance; 2nd-order systems; 2nd-order systems; Passive BPF; Passive LPF\r\n",
-        "Passive LPF Design; Passive HPF, HPF Design; Implications of duality for passive filters; Passive filter examples\r\n",
-        "Active LPF/HPF with real poles; Duality in active filters; Active LPF/HPF with complex poles; Active filter examples; Non-ideal components; Wave equation in conductors\r\n",
-        "Frequency dependence of transmission line impedance, velocity; Frequency dependence of reflection; Effect on input impedance\r\n"
+        "OpAmps - operation (gain, input/output resistance, common-mode)",
+        "Field-Effect Transistor devices; DC review; Current mirror example",
+        "FET small signal models; Active loads",
+        "Common Source amplifier (mid-frequency behavior)", 
+        "Common Drain and Common Gate amplifiers (mid-frequency behavior)", 
+        "Single-stage amplifier time constants for low-/high-freq response",
+        "OpAmp model using FETs",
+        "ODE models for circuits and the solutions thereof",
+        "RC circuits with and without initial conditions",
+        "RL circuits with and without initial conditions; LC circuits with and without initial conditions",
+        "RLC circuits with and without initial conditions",
+        "Modeling of switching in circuits using initial conditions",
+        "Impulse response, h(t), from the step response",
+        "Circuit modeling using h(t)",
+        "Intro to convolution",
+        "Convolution integral and properties",
+        "Laplace Transform definition and basic pairs",
+        "Inverse Laplace Transform via partial fraction expansion",
+        "Transfer function, H(s) System analysis in frequency and time domains",
+        "Response decomposition and steady-state analysis",
+        "Complex plane concepts, pole/zero plots, stability; Frequency response; Frequency and magnitude scaling",
+        "Resonance",
+        "2nd-order systems",
+        "2nd-order systems",
+        "Passive BPF",
+        "Passive LPF",
+        "Passive LPF Design; Passive HPF, HPF Design",
+        "Active LPF/HPF with real poles; Duality in active filters",
+        "Frequency dependence of transmission line impedance",
+        "Frequency dependence of reflection"
     ],
     "\nECE 20007 - Electrical Engineering Fundamentals I Lab\n": [
-        "Activity",
         "Ohm's law ",
         "Time-varying Ohm's law",
         "The Oscilloscope",
@@ -71,7 +101,6 @@
         "Lab practical 2"
     ],
     "\nECE 20008 - Electrical Engineering Fundamentals II Lab\n": [
-        "Activity",
         "The Inverter",
         "Motor control",
         "Operational amplifier circuits",
@@ -88,7 +117,6 @@
         "Final project:  Audio amplifier"
     ],
     "\nECE 20869 - Discrete Mathematics for Computer Engineering\n": [
-        "Topic",
         "Sets and recursive definition",
         "Boolean and predicate logics:  syntax, semantics, entailment, proof",
         "Informal proof: direct and indirect proof, case analysis and proof by contradiction,\r\nmathematical induction, loop invariants",
@@ -97,7 +125,6 @@
         "Decision problems: undecidability, finite-state automata, regular expressions and\r\nKleene's theorem, asymptotic complexity, P and NP"
     ],
     "\nECE 20875 - Python for Data Science\n": [
-        "Topic",
         "Bash scripting, basic Python",
         "Higher order functions, map/reduce, regular\r\nexpressions, basic text processing",
         "Regular expressions, N-gram analysis,\r\nprobability distributions",
@@ -125,7 +152,6 @@
         "Exams"
     ],
     "\nECE 27000 - Introduction to Digital System Design \n": [
-        "Lecture Topics",
         "logic signals; CMOS logic circuits; transmission gates; basic electronic components and concepts; logic levels and noise margins",
         "number systems; base conversion; signed number notation; radix addition and subtraction",
         "Switching Algebra and Combinational Logic Parts 1-3:  switching algebra; combinational circuit analysis and synthesis; characteristics of logic mapping and minimization; timing hazards",
@@ -157,8 +183,6 @@
     "\nECE 29199 - Professional Practice Extensive Co-Op I\n": [],
     "\nECE 29299 - Professional Practice Extensive Co-Op II\n": [],
     "\nECE 29401 - Electrical and Computer Engineering Sophomore Seminar\n": [
-        "Topic(s)",
-        "Introduction; ECE Policies; Degree requirements",
         "Professional development, resume development",
         "Enhancing your Learning",
         "Review of degree requirements, building a Student Educational Plan",
@@ -170,8 +194,6 @@
         "ECE Student Panel to discover what you need to know to be successful in courses as well as ways to become that well-rounded student."
     ],
     "\nECE 29595 - Principles of Digital System Design\n": [
-        "Topic(s)",
-        "Introduction",
         "Number Systems and Codes",
         "Switching Algebra",
         "Combinational Circuit Analysis and Synthesis",
@@ -190,7 +212,6 @@
     "\nECE 29595 - Selected Topics in Electrical and Computer Engineering\n": [],
     "\nECE 29600 - Electrical and Computer Engineering Projects\n": [],
     "\nECE 30010 - Introduction to Machine Learning and Pattern Recognition \n": [
-        "Major Topics",
         "Machine learning and pattern recognition: introduction and examples",
         "Input: concepts, representation and examples",
         "Output: knowledge representation, decision trees and clusters",
@@ -204,7 +225,6 @@
         "Python: an open-source software platform with similarities to Matlab"
     ],
     "\nECE 30100 - Signals and Systems\n": [
-        "Topic(s)",
         "Systems design tasks and tool, system classifications",
         "Time-domain solution of difference equations",
         "Discrete-time impulse responses and convolution",
@@ -219,17 +239,14 @@
         "Tests"
     ],
     "\nECE 30200 - Probabilistic Methods in Electrical and Computer Engineering\n": [
-        "Topic",
         "Introduction, set theory, probability axioms, conditional probability, Bayes rule, total\r\nprobability, independence, Bernoulli trials",
         "Random variables and mass, density and distribution functions; function of a random variable; mean, variance and moments; conditional cdf, pdf and pmf given an event; total cdf, pdf, pmf, expectation and variance",
         "Gaussian, uniform, exponential, geometric, and related random variables; properties and\r\napplications",
         "Multiple random variables and joint and conditional mass, density and distribution functions; independence, correlation, and covariance; functions of random variables; jointly Gaussian random variables",
         "Sums of random variables and long-term averages; estimation of mean and variance; introduction to signal detection and estimation ",
-        "Random processes, interpretations and examples; wide-sense stationary random processes, correlation functions and spectral densities; response of linear time-invariant system to wide-sense stationary inputs and applications ",
-        "Tests"
+        "Random processes, interpretations and examples; wide-sense stationary random processes, correlation functions and spectral densities; response of linear time-invariant system to wide-sense stationary inputs and applications "
     ],
     "\nECE 30411 - Electromagnetics I\n": [
-        "Topic",
         "Vector analysis, Coordinate systems, Differential length, volume, and area, Coulomb's law,  Electric field intensity (E)",
         "Electric Field Intensity continued, Electric flux density, Gauss' law, Divergence",
         "Electric Potential, Gradient, Electric Dipole, Energy density in electrostatic fields",
@@ -247,7 +264,6 @@
         "Transmission lines "
     ],
     "\nECE 30412 - Electromagnetics II\n": [
-        "Topic",
         "Time-varying fields and Maxwell's equations",
         "Plane electromagnetic waves",
         "Theory and application of transmission lines",
@@ -255,7 +271,6 @@
         "Antennas and radiating systems"
     ],
     "\nECE 30414 - Elements of Fiber Optics, Lasers and Optoelectronics\n": [
-        "Topic",
         "Overview of the course, introduction",
         "Fundamentals of Ray optics and resonator optics",
         "Simple optical components",
@@ -281,7 +296,6 @@
         "Current research in photonics"
     ],
     "\nECE 30415 - Fiber Optics and Lasers Laboratory\n": [
-        "Experiment",
         "Power and beam spot measurement of laser beams",
         "Fabry-Perot Cavity and Optical Spectrum Analysis ",
         "Interference Effects ",
@@ -298,7 +312,6 @@
         "Design project"
     ],
     "\nECE 30416 - Basics of Engineering Optics\n": [
-        "Topic",
         "Ray Optics (10): Reflection, Refraction, Snell's Law (1) Huygens principle, Fermat principle (1), Simple optical components, Reflectors, Mirrors, Prisms (2), Thin lenses (1), Thick lenses, lens systems (1), Chromatic and achromatic aberrations (2), Ray matrices (2)",
         "Wave Optics (9): Monochromatic waves, Optical components, Reflection and refraction by EM approach (2), Diffraction gratings (1), Superposition of waves (1), Interference (2), Two-beam interferometers, Temporal coherence (2), Multiple-beam interferometers, Thin films (1), Spatial coherence (1)",
         "Beam Optics (5): Gaussian beams (3), Transmission through optical components (2)",
@@ -306,7 +319,6 @@
         "Fourier Optics (8): Plane waves, Huygens-Fresnel principle (1), Optical Fourier transform (1), Diffraction, Fraunhofer diffraction, Fresnel diffraction (2), Image formation, Filtering, Transfer function (3), Holography (1)"
     ],
     "\nECE 30417 - Engineering Optics Laboratory\n": [
-        "Experiment",
         "Geometric Optics\r\n\r\n",
         "Interferometer and Interference Effects ",
         "Power and beam spot measurement of laser beams",
@@ -320,14 +332,12 @@
         "Coherence Effects"
     ],
     "\nECE 30500 - Semiconductor Devices\n": [
-        "Topic",
         "SEMICONDUCTOR FUNDAMENTALS\r\n    Course Introduction (1)\r\n    Semiconductor materials and models (2)\r\n    Carrier properties and statistics (4)\r\n    Carrier action -- drift, diffusion and recombination-generation (6)",
         "DIODES\r\n    pn Junction diodes\r\n        Fabrication (1)\r\n        Electrostatics (2)\r\n        Ideal I-V characteristics (2)\r\n        Breakdown (1)\r\n        Select deviations from the ideal (1)\r\n        Reverse-bias junction capacitance (1)\r\n    Schottky diodes (3)\r\n    Optoelectronic diodes (1)",
         "TRANSISTORS\r\n    Bipolar junction transistors (5)\r\n    Metal-oxide-semiconductor field-effect transistors (5)\r\n    Modern field-effect transistor structures (2)",
         "( ) designates the number of lecture periods devoted to any particular topic. Remaining hours are used for examinations and problem solution discussions."
     ],
     "\nECE 30600 - Electronic Circuits and Systems Laboratory\n": [
-        "List of Typical Experiments",
         " Methods of Numerical Computation",
         "Analog Operations",
         "Spectral Analysis of Signals",
@@ -340,7 +350,6 @@
         "Four laboratory periods are dedicated to individual projects."
     ],
     "\nECE 30653 - Introduction to Nanotechnology and Quantum Science and Technology\n": [
-        "Lecture Topics",
         "Course overview. What is NANO? Introduction to nano- and quantum worlds. Nanotechnology today.",
         "Basics of quantum physics. De Broglie waves, and the wave-particle duality of matter and light.",
         "Definition and types of nanoparticles. Nanoparticle synthesis",
@@ -371,7 +380,6 @@
         "Final Project Presentations"
     ],
     "\nECE 30700 - Electromagnetic Fields and Waves Laboratory\n": [
-        "Lab Experiments",
         "Organization and General Information",
         "Propagation and Reflection of Pulses on a Coaxial Line\r\n    - Basic Principle\r\n    - TDR Measurements",
         "Coaxial Transmission Line Measurements\r\n    - Introduction to Coaxial Transmission Line\r\n    - Measurement of Impedance and Smith Chart",
@@ -381,7 +389,6 @@
         "Antenna Radiation"
     ],
     "\nECE 30800 - Systems Simulation and Control Laboratory\n": [
-        "Topic",
         "Simulink introduction",
         "Hardware-in-the-loop simulation set-up",
         "Linear time-invariant system identification for servomotor",
@@ -394,7 +401,6 @@
         "Cascade controller simulation"
     ],
     "\nECE 30834 - Fundamentals of Computer Graphics \n": [
-        "Topics",
         "Brief overview of computer graphics and architecture (rendering pipeline), graphics software, and graphics applications. Introduction to the OpenGL library, example programs.",
         "Raster basics: drawing lines and circles, clipping algorithms, polygon intersection. Alias effects, techniques to counter them.",
         "From scene to image: Objects, transforms, color and illumination models, polygonal object representation, texture maps, view port clipping, rasterization.",
@@ -405,7 +411,6 @@
         "Survey of basic tools and techniques for animation, scientific visualization, and computer-aided design."
     ],
     "\nECE 30861 - Software Engineering\n": [
-        "Major Topics",
         "Introduction to class, project description, team organization",
         "A survey of project-relevant engineering tools (project management software, version control, code review, bug tracking, web stack, databases, SQL, etc.)",
         "Software engineering processes",
@@ -415,7 +420,6 @@
         "Project postmortems and presentations"
     ],
     "\nECE 30862 - Object-Oriented Programming in C++ and Java\n": [
-        "Major Topics",
         "Course Introduction and Simple C++",
         "Program Development Environment and Tools",
         "First Introduction to Classes, Encapsulation, Inheritance, and Polymorphism",
@@ -435,7 +439,6 @@
         "Multiple Threads and Synchronization"
     ],
     "\nECE 30864 - Software Engineering Tools\n": [
-        "Activity",
         "Course overview:  The role of tools in software engineering; Integrated Development Editors (IDEs)",
         "Version control:  Git, GitHub, models of distributed software development",
         "Project management tools: Issue trackers, task trackers (e.g.\r\nJira), and linking code changes to project management\r\ntasks.",
@@ -445,7 +448,6 @@
         "Software deployment and monitoring (IaaS, PaaS, FaaS):  includes Docker and two cloud platforms (some combination of GCP, AWS, Azure)"
     ],
     "\nECE 31032 - Power Systems Engineering\n": [
-        "Topic(s)",
         "Economic operation",
         "Basic concepts",
         "Transformers",
@@ -456,7 +458,6 @@
         "State estimation"
     ],
     "\nECE 31033 - Power Electronics\n": [
-        "Major Topics",
         "Introduction to the fields of applications",
         "Characterization of switch types and classification of inverters Semiconductor Devices/Interface Issues",
         "Dc-Dc Converters: circuit configurations, isolated and non-isolated step-down and step-up converters, small ripple approximation, inductor volt-sec balance and capacitor charge balance equations, sizing the inductors and capacitors, design of inductor and capacitors.\r\n",
@@ -466,7 +467,6 @@
         "Practical considerations: gate drivers, types of commutation circuits, snubbing, and thermal management, heatsink design and filtering"
     ],
     "\nECE 32100 - Electromechanical Motion Devices\n": [
-        "Topic(s)",
         "Magnetic and coupled circuits",
         "Electromechanical energy conversion",
         "Exam 1",
@@ -481,7 +481,6 @@
         "Induction machines"
     ],
     "\nECE 32300 - Electromechanical Motion Devices and Systems Laboratory\n": [
-        "Activity",
         "Experiment 1: Introduction to laboratory instrumentation",
         "Experiment 2: Introduction to magnetic circuits and inductance in systems with mechanical motion",
         "Experiment 3: Electromechanical relay; calculation and measurement of electromagnetic forces, simulation and measurement of dynamic performance.",
@@ -492,7 +491,6 @@
         "Experiment 8: Two-Phase servo motor; fundamental parameters, torque-versus-speed characteristics, demonstration of single-phase and servo operation."
     ],
     "\nECE 33700 - ASIC Design Laboratory \n": [
-        "Lecture Topics",
         "Register Transfer Level (RTL) design of systems",
         "Review of System Verilog syntax",
         "Finite State machine (FSM) review, system control using FSM",
@@ -511,7 +509,6 @@
         "small team design assignment"
     ],
     "\nECE 36200 - Microprocessor Systems and Interfacing \n": [
-        "Lecture Topics",
         "Overview of a computer program to device technologies.  Notion of performance, power wall.  Similarities + differences between embedded and high-perf.\r\n",
         "Operations + operand + addressing modes, endianness.  Signed versus unsigned.\r\nInstruction representation\r\nLogical and arithmetic operations.\r\n",
         "Control flow Procedure calls, recursion, stack operation.  ASCII/binary representations. Pointers/Arrays\r\n",
@@ -542,7 +539,6 @@
         "Simulator part 3 - Full single-cycle simulator"
     ],
     "\nECE 36800 - Data Structures \n": [
-        "Major Topics",
         "Introduction",
         "Complexity and Asymptotic Notation",
         "Stacks, Queues, Deques; Abstract Data types; Implementation; Arrays, Pointers, Linked Lists; Applications",
@@ -552,7 +548,6 @@
         "Graphs; Graph Traversal, PERT Diagrams, Spanning Trees, Shortest Paths"
     ],
     "\nECE 36900 - Discrete Mathematics for Computer Engineering\n": [
-        "Topic",
         "Formal Logic",
         "Proof Techniques",
         "Recursion and Recurrence Relations",
@@ -566,7 +561,6 @@
     ],
     "\nECE 38199 - Professional Practice Co-Op I\n": [],
     "\nECE 38200 - Feedback System Analysis and Design\n": [
-        "Topics",
         "Introduction and mathematical background",
         "Transfer functions, block diagrams and signal flowgraphs",
         "Mathematical modeling of physical systems; analogous systems",
@@ -584,7 +578,6 @@
     "\nECE 38399 - Professional Practice Co-Op III\n": [],
     "\nECE 39399 - Professional Practice Extensive Co-Op III\n": [],
     "\nECE 39401 - Professional Communication and Diversity\n": [
-        "Topic",
         "Team Communication/Diversity",
         "Employment Communication",
         "Presentations",
@@ -592,7 +585,6 @@
     ],
     "\nECE 39499 - Professional Practice Extensive Co-Op IV\n": [],
     "\nECE 39595 - Applications of ECE Through Reverse Engineering\n": [
-        "Activity",
         "Welcome, Syllabus, and Lab Safety",
         "Effective Reverse Engineering Strategies, tools, generating schematics, and simulations",
         "Sensors and Filtering, Thermostat Reverse Engineer/Build/Improve",
@@ -605,7 +597,6 @@
         "Final Project: Personal interest reverse-engineer Presentation"
     ],
     "\nECE 39595 - Fundamentals of Quantum Technology\n": [
-        "Topic(s)",
         "Brief history of quantum mechanics; overview of quantum technologies; introduction to calculus of variations",
         "Lagrangian and Hamiltonian mechanics for simple mechanical and electrical systems",
         "Time-independent Schrodinger equation",
@@ -623,7 +614,6 @@
         "Introduction to quantum sensing"
     ],
     "\nECE 39595 - Programming with C++ Lab\n": [
-        "Topic",
         "Overview, quick test on objects and virtual function calls",
         "virtual and non-virtual functions",
         "Constructors, destructors and call order",
@@ -662,7 +652,6 @@
     "\nECE 39600 - Industrial Practice Seminar\n": [],
     "\nECE 39699 - Professional Practice Internship\n": [],
     "\nECE 40020 - Sound Reinforcement System Design\n": [
-        "Topics",
         "Physics:  radiation of sound",
         "Sound: transmission, summation, and reception",
         "Design: evaluation, prediction, variation, and specification",
@@ -672,7 +661,6 @@
         "Demos, design project overview, midterm exam"
     ],
     "\nECE 40400 - Introduction to Computer Security\n": [
-        "Major Topics",
         "Overview of security, history, legal issues",
         "Review/introduction to TCP/IP",
         "Reconnaissance and scanning",
@@ -687,7 +675,6 @@
         "DNS vulnerabilities and DNSSec"
     ],
     "\nECE 40862 - Software for Embedded Systems \n": [
-        "Major Topics",
         "Introduction to embedded systems and associated tool flow",
         "Review of embedded hardware",
         "Time and clocks in embedded systems",
@@ -698,7 +685,6 @@
         "Advanced topics"
     ],
     "\nECE 40863 - Introduction to Computer Networks\n": [
-        "Topic",
         "Introduction and Background",
         "Internet Architecture Principles",
         "Data Link Layer - MAC Addressing, ARP, CSMA/CD, Switched Ethernet, MAC Learning, STP",
@@ -716,7 +702,6 @@
         "HTTP Web Client and Server"
     ],
     "\nECE 40875 - Data Mining Basic Concepts and Techniques\n": [
-        "Topic(s)",
         "Data:  Type of data, data quality, data preprocessing, measure of similarity and dissimilarity, data exploration and visualization.",
         "Association analysis: Frequent itemset generation, rule generation, compact representation of frequent itemsets, rule evaluation and association analysis on relational data.",
         "Putting association analysis to work in applications:  market basket analysis, profile analysis, web log analysis and bioinformatics",
@@ -730,7 +715,6 @@
         "Graph analysis:  Note ranking, link prediction and social networks"
     ],
     "\nECE 41023 - Electromechanical Motion Control\n": [
-        "Topic",
         "Electronic DC Drives",
         "Electronic AC Drives",
         "Exam 1",
@@ -742,7 +726,6 @@
         "Field Oriented Control"
     ],
     "\nECE 41200 - Introduction to Engineering Optics \n": [
-        "Topic",
         "Intro (1) - Ray Optics (10):  Reflection, Refraction, Snell's Law (1) Huygens principle, Fermat principle (1), Simple optical components, Reflectors, Mirrors, Prisms (3), Thin lenses (1), Thick lenses, lens systems (1), Chromatic and achromatic aberrations (2), Ray matrices (2)",
         "Wave Optics (11):  Monochromatic waves, Optical components, Reflection and refraction by EM approach (2), Diffraction gratings (1), Superposition of waves (2), Interference (2), Two-beam interferometers, Temporal coherence (2), Multiple-beam interferometers, Thin films (1), Spatial coherence (1)",
         "Beam Optics (4):  Gaussian beams (2), Transmission through optical components (2) Fourier Optics (10):  Plane waves, Huygens-Fresnel principle (1), Optical Fourier transform (1), Diffraction, Fraunhofer diffraction, Fresnel diffraction (3), Image formation, Filtering, Transfer function (4), Holography (1)",
@@ -750,7 +733,6 @@
         "Tests"
     ],
     "\nECE 41300 - Introduction to Optics Laboratory\n": [
-        "Experiment",
         "Geometric Optics",
         "Polarization Effects",
         "Faraday Rotation",
@@ -763,7 +745,6 @@
         "Coherence Effects"
     ],
     "\nECE 41400 - Elements of Electro And Fiber Optics\n": [
-        "Topic",
         "Overview of the course",
         "Laser beams and transformation of beams\nRay matrices\nGaussian beams\nTransformation of Gaussian beams by simple lenses\nSpatial filtering\nMeasurements and applications",
         "Introduction to lasers\nReview of energy levels\nTransition between energy levels and population inversion\nRate equation for three and four level systems\nLongitudinal modes of optical cavities\nBrief survey of laser systems",
@@ -776,7 +757,6 @@
         "Tests"
     ],
     "\nECE 41500 - Electro- And Fiber Optics Laboratory\n": [
-        "Experiment",
         "Power and beam spot measurement of laser beams.",
         "Spatial filtering and beam expanding.",
         "Transform, convolution and correlation of beams.",
@@ -793,7 +773,6 @@
         "Design project"
     ],
     "\nECE 42300 - Electromechanical Motion Control-Planned last offering will be Spring 2022\n": [
-        "Topic",
         "Electronic DC Drives",
         "Electronic AC Drives",
         "Exam 1",
@@ -805,7 +784,6 @@
         "Field Oriented Control"
     ],
     "\nECE 43200 - Elements of Power System Engineering\n": [
-        "Topic(s)",
         "Economic operation",
         "Basic concepts",
         "Transformers",
@@ -816,7 +794,6 @@
         "State estimation"
     ],
     "\nECE 43300 - Power Electronics \n": [
-        "Major Topics",
         "Introduction to the fields of applications",
         "Characterization of switch types and classification of inverters Semiconductor Devices/Interface Issues",
         "Dc-Dc Converters: circuit configurations, isolated and non-isolated step-down and step-up converters, small ripple approximation, inductor volt-sec balance and capacitor charge balance equations,  sizing the inductors and capacitors, design of inductor and capacitors. ",
@@ -827,7 +804,6 @@
         "Exams"
     ],
     "\nECE 43700 - Computer Design and Prototyping\n": [
-        "Topic",
         "Introduction, Performance",
         "Cont., Instructions",
         "Arithmetic",
@@ -850,7 +826,6 @@
         "Extended CPU Design, Simulation, and Prototyping"
     ],
     "\nECE 43800 - Digital Signal Processing with Applications\n": [
-        "Topics",
         "1.0 Foundations1.1 Continuous-time and discrete-time signals and spectral analysis (CTFT & DTFT;1.2 Continuous-time and discrete-time systems;1.3 Sampling;1.4 Decimation and interpolation;1.5 Z Transform\r\n;1.6 Discrete Fourier Transform (DFT) and Fast Fourier Transform Algorithm (FFT)\r\n;1.7 Digital filter design\r\n;1.8 Filtering random signals\r\n;1.9 Estimating distributions and correlation functions",
         "2.0 Speech Processing;2.1 Speech models and characteristics\r\n;2.2 Short-time Fourier analysis and synthesis;2.3 Linear predictive coding",
         "3.0 Image Processing;3.1 2-D signals and systems;3.2 Image coding;3.3 Image enhancement;3.4 Computed tomography",
@@ -872,7 +847,6 @@
         "Image Processing II. Color images, color spaces, halftoning."
     ],
     "\nECE 44000 - Transmission of Information\n": [
-        "Topic",
         "Review of Signals and Spectral Analysis\n    - linearity and time-invariance\n    - convolution\n    - distortionless transmission",
         "Linear Modulation\n    - amplitude modulation (AM)\n    - single sideband modulation\n    - frequency conversion\n    - frequency division multiplexing",
         "Angle Modulation\n    - frequency modulation (FM)\n    - phase modulation (PM)\n    - phase-locked loops",
@@ -885,7 +859,6 @@
         "Laboratory experiments center on signal and noise measurement techniques and the design of Analog and Digital communication systems."
     ],
     "\nECE 44100 - Distributed Parameter Systems\n": [
-        "Topic",
         "Introduction.  \nTransmission Line Equations and their solutions.  \nPropagation of Signals.  \nWave Velocity and Surge Impedance.",
         "Attenuation, Distortion; Reflections, Reflection Coefficient.  \nPulses.  \nTransmission Line Equations in Steady State.",
         "Standing Waves.  \nInput Impedance and Admittance.  \nThe Smith Chart.  \nSlotted Line Technique.",
@@ -901,7 +874,6 @@
         "Noise, Sources of External Noise.  Internal Noise in Receivers and Amplifiers.  Noise Temperature."
     ],
     "\nECE 45500 - Integrated Circuit Engineering \n": [
-        "Topics",
         "Introduction to IC processing for bipolar and MOS circuit fabrication",
         "Models for IC BJT and MOSFET devices:  Operating point (DC non-linear) and linear high frequency small signal",
         "Multiple FET and BJT composite amplifiers",
@@ -912,7 +884,6 @@
         "Special Topics"
     ],
     "\nECE 45600 - Digital Integrated Circuit Analysis and Design\n": [
-        "Topic(s)",
         "Review of basic amplifiers, Device modeling and Technology",
         "Integrated CMOS Amplifiers and Current Mirrors",
         "Noise in Integrated Curcuits",
@@ -925,7 +896,6 @@
         "Project report and presentation Parts II"
     ],
     "\nECE 45700 - Electronic Design Laboratory\n": [
-        "Activity",
         "Introduction to B&W television. (3 units) Use of the oscilloscope in observing characteristic waveforms of a B&W television receiver and a block diagram understanding of how it operates.",
         "The IF Amplifiers (2 units) Use of a sweep generator and oscilloscope for displaying frequency response of the IF amplifiers and its alignment.",
         "Power Supplies (1 unit) Design of solid state low voltage power supplies and regulated power supplies.  The TV power supply as a case study.",
@@ -938,7 +908,6 @@
         "Chroma modulation on how the 3 color systems is used to produce the color spectrum."
     ],
     "\nECE 46300 - Introduction to Computer Communication Networks \n": [
-        "Topic",
         "Introduction and Overview",
         "Switching and Multiplexing",
         "Internet Architecture and Layering",
@@ -955,7 +924,6 @@
         "Examinations "
     ],
     "\nECE 46800 - Introduction to Compilers and Translation Engineering\n": [
-        "Topics",
         "Structure of a compiler",
         "Scanning, scanner generation",
         "Grammars, parsing, parser generation",
@@ -984,22 +952,17 @@
         "Overall project integration and debugging."
     ],
     "\nECE 46900 - Operating Systems Engineering\n": [
-        "Topics",
         "Introduction; Evolution of modern operating systems, distributed system concepts, operating system services & structure",
         "Processes; Processes & parallel programs, UNIX process control/communication, races, deadlocks, & starvation",
         "Process Management; Multiprogramming, processor scheduling, synchronization & communication",
         "Memory Management; Partitioning and protection, segmentation & paging, virtual memory",
         "Block-Structured Storage Management; Tapes, disks, and mass storage systems, allocation and access scheduling, file system",
         "Network (Distributed Systems); Topology, routing, & protocols, distributed file systems, remote procedure calls, load balancing and process migration",
-        "Performance Analysis; Analytic & simulation models, benchmarking",
-        "Exams",
-        "Laboratory Structure",
-        "There will be approximately five laboratory projects.  All projects will be implemented the C or C++ language. This laboratory will ensure that students will become familiar with both the external and internal structure of operating systems.  Although the topic of each project may be different in each offering, they typically involve the use of standard UNIX facilities for process management and interprocess coordination, and one project will involve the use of multiple UNIX machines as a distributed system or a virtual parallel computer.  Other projects will typically focus on processor management, virtual memory handling, file system mechanisms, writing device drivers, or other key topics in operating systems."
+        "Performance Analysis; Analytic & simulation models, benchmarking"
     ],
     "\nECE 47000 - Curricular Practical Training\n": [],
     "\nECE 47001 - Part-Time Curricular Practical Training\n": [],
     "\nECE 47300 - Introduction to Artificial Intelligence\n": [
-        "Topics",
         "Introduction to AI",
         "Search\n    - review of basic search techniques\n    - heuristic search\n    - game playing\n    - constraint propagation",
         "Machine Learning for Classification\n    - learning theory\n    - decision tree learning\n    - neural nets",
@@ -1008,11 +971,9 @@
         "Planning\n    - STRIPS representation\n    - solution strategies: graphplan\n    - uncertainty: Markov decision processes",
         "Machine Learning About Action Dynamics\n    - temporal difference learning\n    - reinforcement learning, Q learning",
         "Natural Language Processing\n    - grammars and parsing\n    - language understanding\n    - language generation",
-        "Vision\n    - low level vision & segmentation\n    - constraint propagation\n    - line labeling\n    - matching",
-        "Tests/Review"
+        "Vision\n    - low level vision & segmentation\n    - constraint propagation\n    - line labeling\n    - matching"
     ],
     "\nECE 47700 - Digital Systems Senior Project\n": [
-        "Topics",
         "Course and project overview, project proposal guidelines and digital system design consideration and packaging design",
         "Embedded system interfacing, microcontroller survey, power supply design and passive component selection.",
         "Documentation standards, TCSP: project specific success criteria, and patent liability analysis.",
@@ -1039,8 +1000,6 @@
         "Due to the open-ended nature of the design project, as well as the variety of design projects that may be chosen, all of the laboratory work will be completed on an \"open shop\" basis (i.e., laboratory facilities available 24/7 with consultant on duty at scheduled times each week). Lab uses will therefore be on an arrange-hour basis. Examples of lab activities associated with completing the semester-long design project include:"
     ],
     "\nECE 48300 - Digital Control Systems Analysis and Design \n": [
-        "Topic(s)",
-        "Introduction",
         "State Variables, Discrete-Time Systems and the Z-Transform",
         "Sampling and Reconstruction",
         "Open-Loop Discrete-Time Systems",
@@ -1048,8 +1007,7 @@
         "System Time-Response Characteristics",
         "Stability Analysis Techniques",
         "Digital Controller Design",
-        "Pole-Assignment Design and State",
-        "Three Exams"
+        "Pole-Assignment Design and State"
     ],
     "\nECE 49022 - Electrical Engineering Senior Design Projects\n": [],
     "\nECE 49401 - Professional Communication Capstone\n": [
@@ -1060,8 +1018,6 @@
         "Other (guest Speakers, etc.) "
     ],
     "\nECE 49595 - Introduction to Game Theory\n": [
-        "Topic(s)",
-        "Introduction",
         "Dominant Strategies and Iterated Dominance",
         "Pure Strategy Nash Equilibrium",
         "Mixed Strategy Nash Equilibrium",
@@ -1080,14 +1036,12 @@
         "Cooperative Games"
     ],
     "\nECE 49595 - Introduction to Reinforcement Learning\n": [
-        "Lecture Topics",
         "Fundamentals:  Markov Decision Processes, Dynamic Programming, value iteration and policy iteration, model-free methods, and on-policy and off-policy methods",
         "Learning problems and Algorithms:  Background on deep learning, deep reinforcement learning methods, policy gradient methods, actor-critic methods, model-based reinforcement learning, models with continuous states and actions, inverse reinforcement learning, multi-agent reinforcement learning, reinforcement learning with partial observability",
         "Case Studies"
     ],
     "\nECE 49595 - Natural Language Processing\n": [],
     "\nECE 49595 - Open Source Software Senior Design Projects\n": [
-        "Lecture Topics",
         "Course introduction: the power of software, and the many ways you can make software to change lives",
         "Version Control: Code Review and collaboration tools",
         "Build harnesses: continuous integration and delivery",
@@ -1099,13 +1053,10 @@
         "Documentation: API docs, CLI docs, documentation platforms for your community",
         "Licensing and dependency analysis: Software bills of materials, claims and supply chain security",
         "No technology exists in vacuum: societal implications of your software product",
-        "Software governance: codes of conduct, consensus building, and community enhancements",
-        "Guest speaker(s) and their story in open source and industry",
-        "Presentations and demo day"
+        "Software governance: codes of conduct, consensus building, and community enhancements"
     ],
     "\nECE 49595 - Selected Topics in Electrical and Computer Engineering\n": [],
     "\nECE 49595 - Undergraduate Computer Vision\n": [
-        "Lecture Topics",
         "Forward and reverse mode automatic differentiation, and backpropagation",
         "Stochastic processes as probabilistic programs",
         "Model-based object recognition",
@@ -1121,7 +1072,6 @@
     ],
     "\nECE 49600 - Electrical and Computer Engineering Projects\n": [],
     "\nECE 50024 - Machine Learning\n": [
-        "Lecture Topics",
         "Course overview and mathematics review; linear regression",
         "Examples of linear regression; ridge and LASSO regression",
         "Optimization",
@@ -1139,7 +1089,6 @@
         "Regularization and validation; validation and conclusion"
     ],
     "\nECE 50616 - Physics and Manufacturing of Solar Cells\n": [
-        "Topics",
         "Overview of global energy requirements and sources.",
         "Basic principles and device configurations of photovoltaic cells",
         "Review of electrons and holes in semiconductors",
@@ -1157,12 +1106,10 @@
         "Student project presentations"
     ],
     "\nECE 50631 - Fundamentals of Current Flow\n": [
-        "Topic",
         "Unit 1, The New Perspective: Intro, Two Key Concepts, Why Electrons Flow, Conductance Formula, Ballistic (B) Conductance, Diffusive (D) Conductance, Connecting B to D, Angular Averaging, Drude Formula",
         "Unit 2, Energy Band Model: Intro, E(p) or E(k) Relation, Counting States, Density of States, Number of Modes, Electron Density (n), Conductivity vs. n, A New Boundary Condition, Quasi-Fermi Levels (QFLs), Current from QFLs, Landauer Formulas"
     ],
     "\nECE 50632 - Introduction to Quantum Transport\n": [
-        "Topics",
         "Unit 1, Schrodinger Equation: Wave Equation, Differential to Matrix Equation, Dispersion Relation, Counting States, Beyond 1-D, Lattice with a Basis, Graphene, Reciprocal Lattice/Valleys, ",
         "Unit 2, Contact-ing Schrodinger: Semiclassical Model, Quantum Model, NEGF Equations, Scattering Theory",
         "Unit 3, More Examples: Resonant Tunneling, Dephasing, Additional Examples",
