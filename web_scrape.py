@@ -1,4 +1,5 @@
 import requests
+import json
 from bs4 import BeautifulSoup
 
 
@@ -52,6 +53,13 @@ def get_topics():
             classTopics[titles] = topics
     return classTopics
     # print(classTopics)
+
+def save_to_json_file(classTopics, filename="class_topics.json"):
+    with open(filename, 'w', encoding='utf-8') as file:
+        json.dump(classTopics, file, ensure_ascii=False, indent=4)
+
+classTopics = get_topics()
+save_to_json_file(classTopics)
 
 # # URL to scrape
 # url = "https://engineering.purdue.edu/ECE/Academics/Undergraduates/UGO/CourseInfo/courseInfo?courseid=716&show=true&type=undergrad"

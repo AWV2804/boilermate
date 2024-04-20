@@ -62,10 +62,10 @@ export const styles = StyleSheet.create({
             justifyContent: 'space-around',
             alignItems: 'center',
             backgroundColor: '#f2f2f2',
-            height: 60,
+            height: 70,
             width: '100%',
             position: 'absolute',
-            bottom: 10,
+            bottom: 0,
         },
         navButton: {
             justifyContent: 'center',
@@ -81,14 +81,29 @@ export const styles = StyleSheet.create({
             alignItems: 'center',
             backgroundColor: '#f2f2f2',
             height: 60,
-            width: 200,
+            width: 240,
             bottom: 10,
         },
         inputSelect: {
             flex: 1,
             margin: 2,
           },
-
-
+        // Add these styles to your styles.js or wherever you manage styles
+        thumbnail: {
+            width: 120,
+            height: 90,
+            borderRadius: 6 // Optional: for rounded corners
+        },
+        title: {
+            color: 'blue',
+            textDecorationLine: 'underline',
+            marginVertical: 8,
+            flexWrap: 'wrap'
+        },
+        itemContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 10
+        }
 })
 

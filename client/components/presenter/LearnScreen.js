@@ -6,15 +6,24 @@ import { useNavigation } from '@react-navigation/native';
 import { styles } from '../GlobalTypes.js';
 import userService from '../../user.service.js';
 
-const LearnScreen = () => {
+const LearnScreen = ({ route }) => {
     const navigate = useNavigation();
+    const { selectedClass, selectedTopics } = route.params;
     const [videos, setVideos] = useState([]);
     const [websites, setWebsites] = useState([]);
 
     useEffect(() => {
+        console.log("Selected class:", selectedClass);
+    }, [selectedClass]);
+
+    useEffect(() => {
+        console.log("Selected topic:", selectedTopics);
+    }, [selectedTopics]);
+    useEffect(() => {
         // Assuming getTopicVideo is an imported or defined function that returns a promise
         //CURRENTLY HARDCODED
-        userService.getTopicVideo('ECE', 'ece 26400 - advanced C programming', 'Huffman Trees')
+        console.log()
+        userService.getTopicVideo('ECE', selectedClass, selectedTopics)
             .then(data => {
                 setVideos(data.videos);
                 setWebsites(data.websites);
@@ -27,14 +36,20 @@ const LearnScreen = () => {
     const handleHomeNav = () => {
         navigate.navigate('Home');
     };
-
+    const handleClassSelectNav = () => {
+        navigate.navigate('ClassSelect')
+    };
     const handleSettingsNav = () => {
         navigate.navigate('Settings');
     };
 
     const renderItem = ({ item }) => (
-        <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
-            <Text style={{ color: 'blue', textDecorationLine: 'underline', marginVertical: 8 }}>
+        <TouchableOpacity onPress={() => Linking.openURL(item.url)} style={styles.itemContainer}>
+            <Image
+                source={{ uri: item.thumbnailUrl }} // Make sure 'thumbnailUrl' is the correct key
+                style={styles.thumbnail}
+            />
+            <Text style={styles.title}>
                 {item.title}
             </Text>
         </TouchableOpacity>
@@ -46,7 +61,7 @@ const LearnScreen = () => {
                 data={videos}
                 renderItem={renderItem}
                 keyExtractor={item => item.videoId}
-                contentContainerStyle={{ padding: 20 }}
+                contentContainerStyle={{ padding: 20, alignItems: 'flex-start' }} // Adjust padding as needed
             />
             <View style={{ ...styles.navigationBar, borderTopColor: 'gray', borderTopWidth: 0.4 }}>
                 <TouchableOpacity
@@ -54,7 +69,9 @@ const LearnScreen = () => {
                     onPress={handleHomeNav}>
                     <HomeIcon name="home" size={24} color="black" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.navButton}>
+                <TouchableOpacity 
+                    style={styles.navButton}
+                    onPress={handleClassSelectNav}>
                     <SettingsIcon name="school-outline" size={28} color="#C28E0C" />
                 </TouchableOpacity>
                 <TouchableOpacity
