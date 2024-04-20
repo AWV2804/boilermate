@@ -129,9 +129,9 @@ class UserHandler(APIView):
 
 class YoutubeVideoView(APIView):
     @classmethod
-    def scrape_google_websites(self, topic, num_results):
+    def scrape_google_websites(self, topic, class_name, num_results):
         try:
-            query = f"{topic}"
+            query = f"{topic} in {class_name}"
             api_key = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
             cx = 'b73affeb0258a40aa'
             url = f"https://www.googleapis.com/customsearch/v1?key={api_key}&cx={cx}&q={query}&num={num_results}"
@@ -249,7 +249,7 @@ class YoutubeVideoView(APIView):
                 return JsonResponse({'Error': message}, status=500)
             videos, message, worked = self.fetch_youtube_videos(topic_id, 20)
             if worked == False:
-                return JsonResponse({'Error': message},status=500)
+                return JsonResponse({'Error': message}, status=500)
             return JsonResponse({'videos': videos, 'websites': websites}, status=201)
         except Ratelimited:
             return JsonResponse({'Error': 'Rate limit exceeded'}, status=429)
