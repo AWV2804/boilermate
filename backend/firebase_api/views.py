@@ -241,7 +241,7 @@ class YoutubeVideoView(APIView):
                     return JsonResponse({'Error:': message}, status=400)
             ref = db.reference(f'Websites/{topic_id}')
             if ref.get() is None:
-                worked, message = self.scrape_google_websites(topic_id, 10)
+                worked, message = self.scrape_google_websites(topic_id, class_name, 10)
                 if worked == False:
                     return JsonResponse({'Error': message}, status=400)
             websites, message, worked = self.fetch_google_websites(topic_id, 5)
