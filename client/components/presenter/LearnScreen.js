@@ -43,22 +43,32 @@ const LearnScreen = ({ route }) => {
         navigate.navigate('Settings');
     };
 
-    const renderItem = ({ item }) => (
-        <TouchableOpacity onPress={() => Linking.openURL(item.url)} style={styles.itemContainer}>
-            <Image
-                source={{ uri: item.thumbnailUrl }} // Make sure 'thumbnailUrl' is the correct key
-                style={styles.thumbnail}
-            />
-            <Text style={styles.title}>
-                {item.title}
-            </Text>
-        </TouchableOpacity>
-    );
+    const renderItem = ({ item }) => {
+        // Construct thumbnail URL from video ID (assuming item.videoId holds the YouTube video ID)
+        const thumbnailUrl = `https://img.youtube.com/vi/${item.videoId}/0.jpg`;
+    
+        return (
+            <TouchableOpacity onPress={() => Linking.openURL(`https://www.youtube.com/watch?v=${item.videoId}`)} style={styles.itemContainer}>
+                <Image
+                    source={{ uri: thumbnailUrl }}
+                    style={styles.thumbnail}
+                />
+                <Text style={styles.title}>{item.title}</Text>
+            </TouchableOpacity>
+        );
+    };
+    
 
     return (
         <View style={styles.container}>
             <FlatList
                 data={videos}
+                renderItem={renderItem}
+                keyExtractor={item => item.videoId}
+                contentContainerStyle={{ padding: 20, alignItems: 'flex-start' }} // Adjust padding as needed
+            />
+            <FlatList
+                data={websites}
                 renderItem={renderItem}
                 keyExtractor={item => item.videoId}
                 contentContainerStyle={{ padding: 20, alignItems: 'flex-start' }} // Adjust padding as needed
