@@ -67,12 +67,7 @@ const LearnScreen = ({ route }) => {
                 keyExtractor={item => item.videoId}
                 contentContainerStyle={{ padding: 20, alignItems: 'flex-start' }} // Adjust padding as needed
             />
-            <FlatList
-                data={websites}
-                renderItem={renderItem}
-                keyExtractor={item => item.videoId}
-                contentContainerStyle={{ padding: 20, alignItems: 'flex-start' }} // Adjust padding as needed
-            />
+            
             <View style={{ ...styles.navigationBar, borderTopColor: 'gray', borderTopWidth: 0.4 }}>
                 <TouchableOpacity
                     style={styles.navButton}

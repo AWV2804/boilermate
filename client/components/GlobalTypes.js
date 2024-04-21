@@ -90,8 +90,8 @@ export const styles = StyleSheet.create({
           },
         // Add these styles to your styles.js or wherever you manage styles
         thumbnail: {
-            width: 120,
-            height: 90,
+            width: 300,
+            height: 168,
             borderRadius: 6 // Optional: for rounded corners
         },
         title: {
@@ -101,9 +101,12 @@ export const styles = StyleSheet.create({
             flexWrap: 'wrap'
         },
         itemContainer: {
-            flexDirection: 'row',
+            flexDirection: 'column',
             alignItems: 'center',
-            marginBottom: 10
-        }
+            width: 300,              // Adjust width according to your layout needs
+            marginVertical: 10,      // Space between items vertically
+            paddingHorizontal: 10
+        },
+        
 })
 
