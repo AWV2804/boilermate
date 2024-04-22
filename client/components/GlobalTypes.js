@@ -107,6 +107,33 @@ export const styles = StyleSheet.create({
             marginVertical: 10,      // Space between items vertically
             paddingHorizontal: 10
         },
+        tabSelector: {
+            flexDirection: 'row', // Lays out the tabs in a row
+            justifyContent: 'center', // Centers the tabs in the container
+            paddingVertical: 10, // Vertical padding around the tabs
+            backgroundColor: '#f8f8f8', // Background color of the tab bar
+            borderBottomWidth: 1, // Adds a subtle line to the bottom of the tab bar
+            borderBottomColor: '#e1e1e1' // Color of the bottom border
+        },
+
+        tabButton: {
+            flex: 1, // Each button will take equal space
+            alignItems: 'center', // Centers content horizontally within each tab
+            paddingVertical: 10, // Vertical padding for touch area
+        },
+
+        tabButtonActive: {
+            borderBottomWidth: 3, // Highlights the active tab with a thicker bottom border
+            borderBottomColor: '#C28E0C', // Color of the active tab indicator
+            fontWeight: 'bold' // Makes the text of the active tab bold
+        },
+
+        tabText: {
+            fontSize: 16, // Size of the text within tabs
+            color: '#333', // Color of the text
+            fontWeight: 'normal' // Normal text weight for inactive tabs
+        }
+
         
 })
 

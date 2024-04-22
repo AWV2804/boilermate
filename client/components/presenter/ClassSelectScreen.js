@@ -160,6 +160,9 @@ const ClassSelectScreen = () => {
                 <TouchableOpacity style={styles.navButton} onPress={handleClassSelectNav}>
                     <SettingsIcon name="school-outline" size={28} color="#C28E0C" />
                 </TouchableOpacity>
+                <TouchableOpacity style={styles.navButton} onPress={handleClassSelectNav}>
+                    <SettingsIcon name="chatbubble-ellipses-outline" size={28} color="#C28E0C" />
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.navButton} onPress={handleSettingsNav}>
                     <SettingsIcon name="settings-outline" size={24} color="black" />
                 </TouchableOpacity>
