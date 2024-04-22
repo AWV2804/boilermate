@@ -88,14 +88,13 @@ export const styles = StyleSheet.create({
             flex: 1,
             margin: 2,
           },
-        // Add these styles to your styles.js or wherever you manage styles
         thumbnail: {
             width: 300,
             height: 168,
             borderRadius: 6 // Optional: for rounded corners
         },
         title: {
-            color: 'blue',
+            color: '#007AFF',
             textDecorationLine: 'underline',
             marginVertical: 8,
             flexWrap: 'wrap'
@@ -104,6 +103,13 @@ export const styles = StyleSheet.create({
             flexDirection: 'column',
             alignItems: 'center',
             width: 300,              // Adjust width according to your layout needs
+            marginVertical: 10,      // Space between items vertically
+            paddingHorizontal: 10
+        },
+        itemContainerWebsite: {
+            flexDirection: 'column',
+            alignItems: 'left',
+            width: 350,              // Adjust width according to your layout needs
             marginVertical: 10,      // Space between items vertically
             paddingHorizontal: 10
         },
@@ -125,7 +131,7 @@ export const styles = StyleSheet.create({
         tabButtonActive: {
             borderBottomWidth: 3, // Highlights the active tab with a thicker bottom border
             borderBottomColor: '#C28E0C', // Color of the active tab indicator
-            fontWeight: 'bold' // Makes the text of the active tab bold
+            fontWeight: 'bold', // Makes the text of the active tab bold
         },
 
         tabText: {
