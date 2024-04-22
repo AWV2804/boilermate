@@ -30,6 +30,7 @@ const LearnScreen = ({ route }) => {
     const handleHomeNav = () => navigate.navigate('Home');
     const handleClassSelectNav = () => navigate.navigate('ClassSelect');
     const handleSettingsNav = () => navigate.navigate('Settings');
+    const handleChatNav = () => navigate.navigate('Chat');
 
     const renderItemVideo = ({ item }) => {
         const thumbnailUrl = selectedTab === 'videos' ? `https://img.youtube.com/vi/${item.videoId}/0.jpg` : item.thumbnailUrl;
@@ -94,7 +95,7 @@ const LearnScreen = ({ route }) => {
                 <TouchableOpacity style={styles.navButton} onPress={handleClassSelectNav}>
                     <SettingsIcon name="school-outline" size={28} color="#C28E0C" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.navButton} onPress={handleClassSelectNav}>
+                <TouchableOpacity style={styles.navButton} onPress={handleChatNav}>
                     <SettingsIcon name="chatbubble-ellipses-outline" size={28} color="#C28E0C" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.navButton} onPress={handleSettingsNav}>

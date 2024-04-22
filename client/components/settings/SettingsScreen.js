@@ -40,6 +40,11 @@ const SettingsScreen = () => {
     const handleClassSelectNav = () => {
         navigate.navigate('ClassSelect');
     };
+
+    const handleChatNav = () => {
+        navigate.navigate('Chat');
+    };
+
     return (
         <View style={{...styles.container, justifyContent: 'flex-start'}}>
             <Text style={{...styles.buttonTextBlack, marginTop: 30}}>User Email: {userEmail}</Text>
@@ -64,7 +69,7 @@ const SettingsScreen = () => {
                 <TouchableOpacity style={styles.navButton} onPress={handleClassSelectNav}>
                     <SettingsIcon name="school-outline" size={28} color="#C28E0C" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.navButton} onPress={handleClassSelectNav}>
+                <TouchableOpacity style={styles.navButton} onPress={handleChatNav}>
                     <SettingsIcon name="chatbubble-ellipses-outline" size={28} color="#C28E0C" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.navButton} onPress={handleSettingsNav}>

@@ -74,6 +74,10 @@ const ClassSelectScreen = () => {
         navigate.navigate('ClassSelect');
     };
 
+    const handleChatNav = () => {
+        navigate.navigate('Chat');
+    };
+
     const handleClassSearch = (text) => {
         if (text) {
             const filtered = classes.filter(item =>
@@ -160,7 +164,7 @@ const ClassSelectScreen = () => {
                 <TouchableOpacity style={styles.navButton} onPress={handleClassSelectNav}>
                     <SettingsIcon name="school-outline" size={28} color="#C28E0C" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.navButton} onPress={handleClassSelectNav}>
+                <TouchableOpacity style={styles.navButton} onPress={handleChatNav}>
                     <SettingsIcon name="chatbubble-ellipses-outline" size={28} color="#C28E0C" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.navButton} onPress={handleSettingsNav}>
