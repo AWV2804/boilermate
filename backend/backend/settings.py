@@ -16,7 +16,8 @@ from firebase_admin import credentials
 
 def getPath():
     #return Path(r'/mnt/c/Users/mli00/Desktop/Purdue/ECE 49595O/Boilermate-b3fcd-firebase-adminsdk-rwh4i-30e3b04f5c.json') # subject to change
-    return Path(r'/Users/atharvarao/Documents/boilermate/Boilermate-b3fcd-firebase-adminsdk-rwh4i-30e3b04f5c.json') # subject to change
+    # return Path(r'/Users/atharvarao/Documents/boilermate/Boilermate-b3fcd-firebase-adminsdk-rwh4i-30e3b04f5c.json') # subject to change
+    return Path(r'C:\Users\andre\Documents\boilermate.json') # subject to change
 
 path = getPath()
 cred = credentials.Certificate(path)
@@ -109,7 +110,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 YOUTUBE_API_KEY = 'AIzaSyBCWCmdRqhjI6LcZdwNtQEKbBqgbl18eqU'
 
-OPENAI_API_KEY = 'sk-proj-GbBBhDQutQQcZtbn1SCRT3BlbkFJmZf2WyNOXxzcpJ4D6Mif'
+OPENAI_API_KEY = 'sk-proj-GCz8r4NiHlpTQ2rLdP8gT3BlbkFJ0IOlYbVnDUNEmVtBlGRY'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

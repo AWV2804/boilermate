@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 
-API_URL = "http://127.0.0.1:8000/firebase_api/";
+// API_URL = "http://127.0.0.1:8000/firebase_api/";
+API_URL = "http://100.64.134.204:8000/firebase_api/";
 
 class UserService {
 
