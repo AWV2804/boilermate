@@ -7,4 +7,5 @@ urlpatterns = [
     path('fetch-from-firebase/', views.FirebaseHandler.as_view(), name='fetch_from_firebase'), #get method
     path('handle-user/', views.UserHandler.as_view(), name='handle-user'), #post and get method
     path('chat/', views.ChatGPTView.as_view(), name='chatgpt'), # POST method
+    path('update-ratings/<str:topic>/', views.UpdateRatings.as_view(), name='update_ratings') # POST Method
 ]
