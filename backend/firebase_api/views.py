@@ -193,11 +193,13 @@ class YoutubeVideoView(APIView):
                 title = item.get('title')
                 if link:
                     link = link.replace("/", "\u2215").replace(".", "\u2219")
-                    ref = db.reference(f'Websites/{topic}/{link}')
+                    link2 = link.replace("?", "\u0362").replace("=", "\u01A2")
+                    link3 = link2.replace("&", "\u214B")
+                    ref = db.reference(f'Websites/{topic}/{link3}')
                     ref.set({
                         'title': title,
                         'rating': 50
-                    })
+                    })  
             return True, "success"
         except Exception as e:
             return False, str(e)
@@ -266,9 +268,11 @@ class YoutubeVideoView(APIView):
                 ref = db.reference(f'Websites/{topic}/{random_url}')
                 if ref.get().get('rating') >= 40:
                     random_url = random_url.replace("\u2215", "/").replace("\u2219", ".")
+                    random_url2 = random_url.replace("\u0362", "?").replace("\u01A2", "=")
+                    random_url3 = random_url2.replace("\u214B", "&")
                     websites.append({
-                        'title': ref.get().get('title'),
-                        'website_url': random_url
+                        'title': ref.get().get('title'), 
+                        'website_url': random_url3
                     })
             return websites, "success", True
         except Exception as e:
@@ -283,17 +287,17 @@ class YoutubeVideoView(APIView):
             class_name = re.sub(r'^.*?-\s*', '', class_name)
             save_success = FirebaseHandler.save_to_firebase(dept, class_name, topic_id)
             if save_success == False:
-                return JsonResponse({'error': 'failed to save to firebase'}, status=500)
+                return JsonResponse({'error': 'failed to save to firebase'}, status=500) 
             ref = db.reference(f'Videos/{topic_id}')
             if ref.get() is None:
                 worked, message = self.scrape_youtube_videos(topic_id, class_name, 1000)
                 if worked == False:
-                    return JsonResponse({'Error:': message}, status=400)
+                    return JsonResponse({'Error:': message}, status=500)
             ref = db.reference(f'Websites/{topic_id}')
             if ref.get() is None:
                 worked, message = self.scrape_google_websites(topic_id, class_name, 10)
                 if worked == False:
-                    return JsonResponse({'Error': message}, status=400)
+                    return JsonResponse({'Error': message}, status=500)
             websites, message, worked = self.fetch_google_websites(topic_id, 5)
             if worked == False:
                 return JsonResponse({'Error': message}, status=500)
@@ -301,6 +305,7 @@ class YoutubeVideoView(APIView):
             if worked == False:
                 return JsonResponse({'Error': message}, status=500)
             return JsonResponse({'videos': videos, 'websites': websites}, status=201)
+            return JsonResponse({'message': 'success'}, status=201)
         except Ratelimited:
             return JsonResponse({'Error': 'Rate limit exceeded'}, status=429)
 
