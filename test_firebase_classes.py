@@ -4,13 +4,11 @@ from firebase_admin import db
 from firebase_admin import credentials
 
 def getPath():
-    return Path(r'/mnt/c/Users/mli00/Desktop/Purdue/ECE 49595O/Boilermate-b3fcd-firebase-adminsdk-rwh4i-30e3b04f5c.json') # subject to change
+    return Path(r'/home/runner/secrets/Boilermate-b3fcd-firebase-adminsdk-rwh4i-30e3b04f5c.json')
 
 path = getPath()
 cred = credentials.Certificate(path)
-firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://boilermate-b3fcd-default-rtdb.firebaseio.com'
-})
+firebase_admin.get_app()
 
 def save_to_firebase(department, class_name, topic):
         try:
