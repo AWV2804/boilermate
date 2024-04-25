@@ -22,11 +22,11 @@ class UpdateRatings(APIView):
         try:
             ref = db.reference(f'Videos/{topic}/{video_id}')
             curr_rating = ref.get().get('rating')
-            updated_rating = curr_rating
+            updated_rating = int(curr_rating)
             if thumbs_up == True:
-                updated_rating += 1
+                updated_rating = updated_rating + 1
             elif thumbs_down == True:
-                updated_rating -= 1
+                updated_rating = updated_rating - 1
             ref.update({'rating': updated_rating})
             return True, "Rating updated successfully"
         except Exception as e:
@@ -34,13 +34,13 @@ class UpdateRatings(APIView):
     
     @classmethod
     def update_rating_web(self, topic, web_url, thumbs_up, thumbs_down):
-        try:
+        try: 
             ref = db.reference(f'Websites/{topic}/{web_url}')
-            curr_rating = ref.get().get('rating')
+            curr_rating = ref.get('rating')
             updated_rating = curr_rating
-            if thumbs_up == True:
+            if thumbs_up:
                 updated_rating += 1
-            elif thumbs_down == True:
+            elif thumbs_down:
                 updated_rating -= 1
             ref.update({'rating': updated_rating})
             return True, "Rating updated successfully"
@@ -51,19 +51,16 @@ class UpdateRatings(APIView):
     def post(self, request):
         try:
             topic = request.GET.get('topic')
-            videos = request.data.get('videos', [])
-            webs = request.data.get('webites', [])
-            for video in videos:
-                video_id = video.get('videoId')
-                thumbs_up = video.get('thumbs_up', False)
-                thumbs_down = video.get('thumbs_down', False)
-                success, message = self.update_rating_videos(topic, video_id, thumbs_up, thumbs_down)
+            video = request.GET.get('video_id')
+            if video is None:
+                web_url = request.GET.get('webite_url')
+            thumbs_up = request.GET.get('thumbs_up', False)
+            thumbs_down = request.GET.get('thumbs_down', False)
+            if video is not None:
+                success, message = self.update_rating_videos(topic, video, thumbs_up, thumbs_down)
                 if not success:
                     return JsonResponse({'Error': message}, status=500)
-            for web in webs:
-                web_url = web.get('website_url')
-                thumbs_up = web.get('thumbs_up', False)
-                thumbs_down = web.get('thumbs_down', False)
+            else:
                 success, message = self.update_rating_web(topic, web_url, thumbs_up, thumbs_down)
                 if not success:
                     return JsonResponse({'Error': message}, status=500)
